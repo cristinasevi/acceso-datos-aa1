@@ -1,0 +1,125 @@
+package acceso.datos.aa1.movies.service;
+
+import acceso.datos.aa1.movies.domain.Movie;
+import acceso.datos.aa1.movies.domain.Review;
+import acceso.datos.aa1.movies.domain.User;
+import acceso.datos.aa1.movies.dto.ReviewDto;
+import acceso.datos.aa1.movies.dto.ReviewInDto;
+import acceso.datos.aa1.movies.dto.ReviewOutDto;
+import acceso.datos.aa1.movies.exception.MovieNotFoundException;
+import acceso.datos.aa1.movies.exception.ReviewNotFoundException;
+import acceso.datos.aa1.movies.exception.UserNotFoundException;
+import acceso.datos.aa1.movies.repository.MovieRepository;
+import acceso.datos.aa1.movies.repository.ReviewRepository;
+import acceso.datos.aa1.movies.repository.UserRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class ReviewService {
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Review add(ReviewInDto reviewInDto, long movieId) throws MovieNotFoundException, UserNotFoundException {
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(MovieNotFoundException::new);
+
+        User user = userRepository.findById(reviewInDto.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        Review review = new Review();
+        modelMapper.map(reviewInDto, review);
+        review.setMovie(movie);
+        review.setUser(user);
+
+        if (review.getReviewDate() == null) {
+            review.setReviewDate(LocalDate.now());
+        }
+
+        return reviewRepository.save(review);
+    }
+
+    public void delete(long id) throws ReviewNotFoundException {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(ReviewNotFoundException::new);
+        reviewRepository.delete(review);
+    }
+
+    public List<ReviewOutDto> findAll() {
+        List<Review> reviews = reviewRepository.findAll();
+        return mapToOutDto(reviews);
+    }
+
+    public List<ReviewOutDto> findByMovieId(long movieId) {
+        List<Review> reviews = reviewRepository.findByMovieId(movieId);
+        return mapToOutDto(reviews);
+    }
+
+    public List<ReviewOutDto> findByUserId(long userId) {
+        List<Review> reviews = reviewRepository.findByUserId(userId);
+        return mapToOutDto(reviews);
+    }
+
+    public ReviewDto findById(long id) throws ReviewNotFoundException {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(ReviewNotFoundException::new);
+
+        ReviewDto reviewDto = modelMapper.map(review, ReviewDto.class);
+
+        // Relaciones simplificadas
+        if (review.getUser() != null) {
+            reviewDto.setUserId(review.getUser().getId());
+            reviewDto.setUsername(review.getUser().getUsername());
+        }
+        if (review.getMovie() != null) {
+            reviewDto.setMovieId(review.getMovie().getId());
+            reviewDto.setMovieTitle(review.getMovie().getTitle());
+        }
+
+        return reviewDto;
+    }
+
+    public Review modify(long id, Review review) throws ReviewNotFoundException {
+        Review existingReview = reviewRepository.findById(id)
+                .orElseThrow(ReviewNotFoundException::new);
+
+        modelMapper.map(review, existingReview);
+        existingReview.setId(id);
+
+        return reviewRepository.save(existingReview);
+    }
+
+    // Método auxiliar para mapear a ReviewOutDto con relaciones
+    private List<ReviewOutDto> mapToOutDto(List<Review> reviews) {
+        List<ReviewOutDto> reviewOutDtos = modelMapper.map(reviews, new TypeToken<List<ReviewOutDto>>() {}.getType());
+
+        for (int i = 0; i < reviews.size(); i++) {
+            Review review = reviews.get(i);
+            ReviewOutDto dto = reviewOutDtos.get(i);
+
+            if (review.getUser() != null) {
+                dto.setUsername(review.getUser().getUsername());
+            }
+            if (review.getMovie() != null) {
+                dto.setMovieTitle(review.getMovie().getTitle());
+            }
+        }
+
+        return reviewOutDtos;
+    }
+}
