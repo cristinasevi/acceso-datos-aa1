@@ -1,0 +1,15 @@
+name: movies
+services:
+  db:
+    image: mariadb:11.3.2
+    container_name: movies-db
+    environment:
+      MYSQL_USER: $MARIADB_USER
+      MYSQL_PASSWORD: $MARIADB_PASSWORD
+      MYSQL_DATABASE: $MARIADB_DATABASE
+      MYSQL_PORT: 3307
+      MYSQL_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+    ports:
+      - "3307:3307"
+    volumes:
+      - C:/Users/Cristina/Documents/mariadb:/var/lib/mysql
