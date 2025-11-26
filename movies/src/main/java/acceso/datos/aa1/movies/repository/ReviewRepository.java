@@ -1,0 +1,23 @@
+package acceso.datos.aa1.movies.repository;
+
+import acceso.datos.aa1.movies.domain.Movie;
+import acceso.datos.aa1.movies.domain.Review;
+import acceso.datos.aa1.movies.domain.User;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ReviewRepository extends CrudRepository<Review, Long> {
+
+    List<Review> findAll();
+
+    List<Review> findByMovie(Movie movie);
+
+    List<Review> findByUser(User user);
+
+    List<Review> findByMovieId(Long movieId);
+
+    List<Review> findByUserId(Long userId);
+}
