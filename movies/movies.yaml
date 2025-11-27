@@ -1,0 +1,1520 @@
+openapi: 3.0.1
+info:
+  title: Movies API
+  description: API REST para la gestión de películas, actores, usuarios, reseñas, directores y productoras.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /movies:
+    get:
+      summary: Devuelve la lista de películas
+      description: |
+        Devuelve una lista con todas las películas disponibles
+        
+        Se permite filtrar películas por:
+          - **genre**: Filtra por género
+      parameters:
+        - name: genre
+          in: query
+          description: Filtra por género de la película
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar una película
+      description: Registra una nueva película
+      requestBody:
+        description: Los datos de la nueva película
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieInDto'
+      responses:
+        '201':
+          description: Película registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /movies/{id}:
+    get:
+      summary: Devuelve una película por ID
+      description: Devuelve los datos de una película específica
+      parameters:
+        - name: id
+          in: path
+          description: ID de la película
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar una película
+      description: Actualiza los datos de una película existente
+      parameters:
+        - name: id
+          in: path
+          description: ID de la película
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados de la película
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieInDto'
+      responses:
+        '200':
+          description: Película actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar una película
+      description: Elimina una película del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID de la película
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Película eliminada
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /movies/{movieId}/reviews:
+    get:
+      summary: Devuelve las reseñas de una película
+      description: Devuelve todas las reseñas asociadas a una película específica
+      parameters:
+        - name: movieId
+          in: path
+          description: ID de la película
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewOutDto'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Crear una reseña para una película
+      description: Registra una nueva reseña asociada a una película
+      parameters:
+        - name: movieId
+          in: path
+          description: ID de la película
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos de la nueva reseña
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInDto'
+      responses:
+        '201':
+          description: Reseña registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /actors:
+    get:
+      summary: Devuelve la lista de actores
+      description: |
+        Devuelve una lista con todos los actores disponibles
+        
+        Se permite filtrar actores por:
+          - **nationality**: Filtra por nacionalidad
+      parameters:
+        - name: nationality
+          in: query
+          description: Filtra por nacionalidad del actor
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActorOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar un actor
+      description: Registra un nuevo actor
+      requestBody:
+        description: Los datos del nuevo actor
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorInDto'
+      responses:
+        '201':
+          description: Actor registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /actors/{id}:
+    get:
+      summary: Devuelve un actor por ID
+      description: Devuelve los datos de un actor específico
+      parameters:
+        - name: id
+          in: path
+          description: ID del actor
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar un actor
+      description: Actualiza los datos de un actor existente
+      parameters:
+        - name: id
+          in: path
+          description: ID del actor
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados del actor
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorInDto'
+      responses:
+        '200':
+          description: Actor actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar un actor
+      description: Elimina un actor del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID del actor
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Actor eliminado
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /users:
+    get:
+      summary: Devuelve la lista de usuarios
+      description: Devuelve una lista con todos los usuarios registrados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar un usuario
+      description: Registra un nuevo usuario
+      requestBody:
+        description: Los datos del nuevo usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInDto'
+      responses:
+        '201':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /users/{id}:
+    get:
+      summary: Devuelve un usuario por ID
+      description: Devuelve los datos de un usuario específico
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar un usuario
+      description: Actualiza los datos de un usuario existente
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados del usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInDto'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar un usuario
+      description: Elimina un usuario del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Usuario eliminado
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /users/{userId}/reviews:
+    get:
+      summary: Devuelve las reseñas de un usuario
+      description: Devuelve todas las reseñas creadas por un usuario específico
+      parameters:
+        - name: userId
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewOutDto'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /reviews:
+    get:
+      summary: Devuelve la lista de reseñas
+      description: Devuelve una lista con todas las reseñas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReviewOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /reviews/{id}:
+    get:
+      summary: Devuelve una reseña por ID
+      description: Devuelve los datos de una reseña específica
+      parameters:
+        - name: id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar una reseña
+      description: Actualiza los datos de una reseña existente
+      parameters:
+        - name: id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados de la reseña
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInDto'
+      responses:
+        '200':
+          description: Reseña actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar una reseña
+      description: Elimina una reseña del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID de la reseña
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Reseña eliminada
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /directors:
+    get:
+      summary: Devuelve la lista de directores
+      description: |
+        Devuelve una lista con todos los directores disponibles
+        
+        Se permite filtrar directores por:
+          - **nationality**: Filtra por nacionalidad
+      parameters:
+        - name: nationality
+          in: query
+          description: Filtra por nacionalidad del director
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DirectorOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar un director
+      description: Registra un nuevo director
+      requestBody:
+        description: Los datos del nuevo director
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectorInDto'
+      responses:
+        '201':
+          description: Director registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Director'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /directors/{id}:
+    get:
+      summary: Devuelve un director por ID
+      description: Devuelve los datos de un director específico
+      parameters:
+        - name: id
+          in: path
+          description: ID del director
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Director'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar un director
+      description: Actualiza los datos de un director existente
+      parameters:
+        - name: id
+          in: path
+          description: ID del director
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados del director
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectorInDto'
+      responses:
+        '200':
+          description: Director actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Director'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar un director
+      description: Elimina un director del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID del director
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Director eliminado
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /studios:
+    get:
+      summary: Devuelve la lista de productoras
+      description: |
+        Devuelve una lista con todas las productoras cinematográficas disponibles
+        
+        Se permite filtrar productoras por:
+          - **country**: Filtra por país
+      parameters:
+        - name: country
+          in: query
+          description: Filtra por país de la productora
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudioOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar una productora
+      description: Registra una nueva productora cinematográfica
+      requestBody:
+        description: Los datos de la nueva productora
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudioInDto'
+      responses:
+        '201':
+          description: Productora registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Studio'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /studios/{id}:
+    get:
+      summary: Devuelve una productora por ID
+      description: Devuelve los datos de una productora específica
+      parameters:
+        - name: id
+          in: path
+          description: ID de la productora
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Studio'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Actualizar una productora
+      description: Actualiza los datos de una productora existente
+      parameters:
+        - name: id
+          in: path
+          description: ID de la productora
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Los datos actualizados de la productora
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudioInDto'
+      responses:
+        '200':
+          description: Productora actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Studio'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Eliminar una productora
+      description: Elimina una productora del sistema
+      parameters:
+        - name: id
+          in: path
+          description: ID de la productora
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Productora eliminada
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+components:
+  schemas:
+    Studio:
+      allOf:
+        - $ref: '#/components/schemas/StudioInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único de la productora
+      example:
+        id: 1
+        name: Warner Bros
+        country: USA
+        foundationYear: 1923
+        email: contact@warnerbros.com
+        phone: "+1234567890"
+        active: true
+    StudioInDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre de la productora
+        country:
+          type: string
+          description: País de la productor
+        foundationYear:
+          type: integer
+          description: Año de fundación de la productora
+        email:
+          type: string
+          description: Email de contacto
+        phone:
+          type: string
+          description: Teléfono de contacto
+        active:
+          type: boolean
+          description: Estado activo de la productora
+      example:
+        name: Warner Bros
+        country: USA
+        foundationYear: 1923
+        email: contact@warnerbros.com
+        phone: "+1234567890"
+        active: true
+    StudioOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador de la productora
+        name:
+          type: string
+          description: Nombre de la productora
+        country:
+          type: string
+          description: País de la productora
+        active:
+          type: boolean
+          description: Estado activo de la productora
+      example:
+        id: 1
+        name: Warner Bros
+        country: USA
+        active: true
+    Director:
+      allOf:
+        - $ref: '#/components/schemas/DirectorInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único del director
+      example:
+        id: 1
+        name: Steven Spielberg
+        nationality: American
+        birthDate: 1946-12-18
+        active: true
+        awards: 24
+        biography: American film director
+    DirectorInDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del director
+        nationality:
+          type: string
+          description: Nacionalidad del director
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento del director
+        active:
+          type: boolean
+          description: Estado activo del director
+        awards:
+          type: integer
+          description: Número de premios ganados
+        biography:
+          type: string
+          description: Biografía del director
+      example:
+        name: Steven Spielberg
+        nationality: American
+        birthDate: 1946-12-18
+        active: true
+        awards: 24
+        biography: American film director
+    DirectorOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador del director
+        name:
+          type: string
+          description: Nombre del director
+        nationality:
+          type: string
+          description: Nacionalidad del director
+        active:
+          type: boolean
+          description: Estado activo del director
+      example:
+        id: 1
+        name: Steven Spielberg
+        nationality: American
+        active: true
+    Actor:
+      allOf:
+        - $ref: '#/components/schemas/ActorInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único del actor
+      example:
+        id: 1
+        name: Leonardo DiCaprio
+        nationality: American
+        birthDate: 1974-11-11
+        active: true
+        awards: 1
+        biography: Award-winning actor
+        actorType: Lead
+    ActorInDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del actor
+        nationality:
+          type: string
+          description: Nacionalidad del actor
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento del actor
+        active:
+          type: boolean
+          description: Estado activo del actor
+        awards:
+          type: integer
+          description: Número de premios ganados
+        biography:
+          type: string
+          description: Biografía del actor
+        actorType:
+          type: string
+          description: Tipo de actor (Lead, Supporting)
+      example:
+        name: Leonardo DiCaprio
+        nationality: American
+        birthDate: 1974-11-11
+        active: true
+        awards: 1
+        biography: Award-winning actor
+        actorType: Lead
+    ActorOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador del actor
+        name:
+          type: string
+          description: Nombre del actor
+        nationality:
+          type: string
+          description: Nacionalidad del actor
+        active:
+          type: boolean
+          description: Estado activo del actor
+        actorType:
+          type: string
+          description: Tipo de actor
+      example:
+        id: 1
+        name: Leonardo DiCaprio
+        nationality: American
+        active: true
+        actorType: Lead
+    Movie:
+      allOf:
+        - $ref: '#/components/schemas/MovieInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único de la película
+      example:
+        id: 1
+        title: Catch Me If You Can
+        synopsis: A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.
+        releaseDate: 2003-01-24
+        duration: 141
+        genre: Action
+        averageRating: 8.1
+        imageUrl: https://storage.googleapis.com/pod_public/1300/263016.jpg
+        studio:
+          id: 1
+        director:
+          id: 1
+    MovieInDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título de la película
+        synopsis:
+          type: string
+          description: Sinopsis de la película
+        releaseDate:
+          type: string
+          format: date
+          description: Fecha de lanzamiento
+        duration:
+          type: integer
+          description: Duración en minutos
+        genre:
+          type: string
+          description: Género de la película
+        averageRating:
+          type: number
+          format: float
+          description: Puntuación promedio
+        imageUrl:
+          type: string
+          description: URL de la imagen
+        studio:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+          description: Productora asociada
+        director:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+          description: Director asociado
+      example:
+        title: Catch Me If You Can
+        synopsis: A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.
+        releaseDate: 2003-01-24
+        duration: 141
+        genre: Action
+        averageRating: 8.1
+        imageUrl: https://storage.googleapis.com/pod_public/1300/263016.jpg
+        studio:
+          id: 1
+        director:
+          id: 1
+    MovieOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador de la película
+        title:
+          type: string
+          description: Título de la película
+        synopsis:
+          type: string
+          description: Sinopsis de la película
+        genre:
+          type: string
+          description: Género de la película
+        averageRating:
+          type: number
+          format: float
+          description: Puntuación promedio
+        imageUrl:
+          type: string
+          description: URL de la imagen
+      example:
+        id: 1
+        title: Catch Me If You Can
+        synopsis: A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.
+        genre: Action
+        averageRating: 8.1
+        imageUrl: https://storage.googleapis.com/pod_public/1300/263016.jpg
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único del usuario
+      example:
+        id: 1
+        username: csevi
+        name: Cristina
+        surname: Serrano
+        email: csevi@gmail.com
+        password: password123
+        registrationDate: 2025-11-27
+        premium: true
+        birthDate: 2006-06-02
+    UserInDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario
+        name:
+          type: string
+          description: Nombre del usuario
+        surname:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Email del usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+        registrationDate:
+          type: string
+          format: date
+          description: Fecha de registro
+        premium:
+          type: boolean
+          description: Estado premium del usuario
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento
+      example:
+        username: csevi
+        name: Cristina
+        surname: Serrano
+        email: csevi@gmail.com
+        password: password123
+        registrationDate: 2025-11-27
+        premium: true
+        birthDate: 2006-06-02
+    UserOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador del usuario
+        username:
+          type: string
+          description: Nombre de usuario
+        name:
+          type: string
+          description: Nombre del usuario
+        surname:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Email del usuario
+        premium:
+          type: boolean
+          description: Estado premium
+      example:
+        id: 1
+        username: csevi
+        name: Cristina
+        surname: Serrano
+        email: csevi@gmail.com
+        premium: true
+    Review:
+      allOf:
+        - $ref: '#/components/schemas/ReviewInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador único de la reseña
+      example:
+        id: 1
+        comment: An absolutely mind-bending masterpiece
+        rating: 10
+        reviewDate: 2025-11-27
+        recommended: true
+        spoiler: false
+        userId: 1
+    ReviewInDto:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Comentario de la reseña
+        rating:
+          type: integer
+          description: Puntuación de la reseña
+        reviewDate:
+          type: string
+          format: date
+          description: Fecha de la reseña
+        recommended:
+          type: boolean
+          description: Recomendación
+        spoiler:
+          type: boolean
+          description: Contiene spoilers
+        userId:
+          type: integer
+          format: int64
+          description: ID del usuario que crea la reseña
+      example:
+        comment: An absolutely mind-bending masterpiece
+        rating: 10
+        reviewDate: 2025-11-27
+        recommended: true
+        spoiler: false
+        userId: 1
+    ReviewOutDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificador de la reseña
+        comment:
+          type: string
+          description: Comentario de la reseña
+        rating:
+          type: integer
+          description: Puntuación de la reseña
+        reviewDate:
+          type: string
+          format: date
+          description: Fecha de la reseña
+        recommended:
+          type: boolean
+          description: Recomendación
+        spoiler:
+          type: boolean
+          description: Contiene spoilers
+      example:
+        id: 1
+        comment: An absolutely mind-bending masterpiece
+        rating: 10
+        reviewDate: 2025-11-27
+        recommended: true
+        spoiler: false
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: number
+          format: int
+          description: Código de estado
+        message:
+          type: string
+          description: Mensaje de error
+        title:
+          type: string
+          description: Tipo de error
+    InternalServerError:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+      example:
+        code: 500
+        message: Internal server error
+        title: internal-server-error
+    BadRequest:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+      example:
+        code: 400
+        message: Validation error
+        title: bad-request
+    NotFound:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+      example:
+        code: 404
+        message: Resource not found
+        title: not-found
