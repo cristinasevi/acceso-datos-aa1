@@ -13,7 +13,6 @@ API REST para la gestión de películas, directores, actores, productoras, usuar
 - [Endpoints de la API](#endpoints-de-la-api)
 - [Pruebas con Postman](#pruebas-con-postman)
 - [Base de Datos](#base-de-datos)
-- [Autor](#autor)
 
 ## Descripción
 
