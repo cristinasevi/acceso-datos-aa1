@@ -94,18 +94,20 @@ movies/
 ├── src/
 │   ├── main/
 │   │   ├── java/acceso/datos/aa1/movies/
-│   │   │   ├── config/          # Configuración (ModelMapper)
-│   │   │   ├── controller/      # Controladores REST (6)
-│   │   │   ├── domain/          # Entidades JPA (6)
-│   │   │   ├── dto/             # Data Transfer Objects (13)
-│   │   │   ├── exception/       # Excepciones personalizadas (7)
-│   │   │   ├── repository/      # Repositorios JPA (6)
-│   │   │   ├── service/         # Lógica de negocio (6)
-│   │   │   └── util/            # Utilidades (DateUtil)
+│   │   │   ├── config/          # Configuración de la aplicación
+│   │   │   ├── controller/      # Controladores REST
+│   │   │   ├── domain/          # Entidades JPA
+│   │   │   ├── dto/             # Data Transfer Objects
+│   │   │   ├── exception/       # Excepciones personalizadas
+│   │   │   ├── repository/      # Repositorios JPA
+│   │   │   ├── service/         # Lógica de negocio
+│   │   │   └── util/            # Utilidades
 │   │   └── resources/
-│   │       └── application.properties
+│   │       └── application.properties  # Configuración de Spring y BD
+│   │       └── logback-spring.xml      # Configuración de logs
 │   └── test/                    # Tests unitarios
 ├── docker-compose.dev.yaml      # Configuración de Docker
+├── movies.yaml                  # OpenAPI 3.0
 ├── .env                         # Variables de entorno
 ├── pom.xml                      # Dependencias Maven
 └── README.md                    # Este archivo

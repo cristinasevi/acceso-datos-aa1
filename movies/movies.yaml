@@ -8,6 +8,8 @@ servers:
 paths:
   /movies:
     get:
+      tags:
+        - Movies
       summary: Devuelve la lista de películas
       description: |
         Devuelve una lista con todas las películas disponibles
@@ -37,6 +39,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Movies
       summary: Registrar una película
       description: Registra una nueva película
       requestBody:
@@ -66,6 +70,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /movies/{id}:
     get:
+      tags:
+        - Movies
       summary: Devuelve una película por ID
       description: Devuelve los datos de una película específica
       parameters:
@@ -96,6 +102,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Movies
       summary: Actualizar una película
       description: Actualiza los datos de una película existente
       parameters:
@@ -138,6 +146,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Movies
       summary: Eliminar una película
       description: Elimina una película del sistema
       parameters:
@@ -165,6 +175,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /movies/{movieId}/reviews:
     get:
+      tags:
+        - Movies
       summary: Devuelve las reseñas de una película
       description: Devuelve todas las reseñas asociadas a una película específica
       parameters:
@@ -197,6 +209,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Movies
       summary: Crear una reseña para una película
       description: Registra una nueva reseña asociada a una película
       parameters:
@@ -240,6 +254,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /actors:
     get:
+      tags:
+        - Actors
       summary: Devuelve la lista de actores
       description: |
         Devuelve una lista con todos los actores disponibles
@@ -269,6 +285,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Actors
       summary: Registrar un actor
       description: Registra un nuevo actor
       requestBody:
@@ -298,6 +316,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /actors/{id}:
     get:
+      tags:
+        - Actors
       summary: Devuelve un actor por ID
       description: Devuelve los datos de un actor específico
       parameters:
@@ -328,6 +348,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Actors
       summary: Actualizar un actor
       description: Actualiza los datos de un actor existente
       parameters:
@@ -370,6 +392,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Actors
       summary: Eliminar un actor
       description: Elimina un actor del sistema
       parameters:
@@ -397,6 +421,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /users:
     get:
+      tags:
+        - Users
       summary: Devuelve la lista de usuarios
       description: Devuelve una lista con todos los usuarios registrados
       responses:
@@ -415,6 +441,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Users
       summary: Registrar un usuario
       description: Registra un nuevo usuario
       requestBody:
@@ -444,6 +472,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /users/{id}:
     get:
+      tags:
+        - Users
       summary: Devuelve un usuario por ID
       description: Devuelve los datos de un usuario específico
       parameters:
@@ -474,6 +504,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Users
       summary: Actualizar un usuario
       description: Actualiza los datos de un usuario existente
       parameters:
@@ -516,6 +548,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Users
       summary: Eliminar un usuario
       description: Elimina un usuario del sistema
       parameters:
@@ -543,6 +577,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /users/{userId}/reviews:
     get:
+      tags:
+        - Users
       summary: Devuelve las reseñas de un usuario
       description: Devuelve todas las reseñas creadas por un usuario específico
       parameters:
@@ -576,6 +612,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /reviews:
     get:
+      tags:
+        - Reviews
       summary: Devuelve la lista de reseñas
       description: Devuelve una lista con todas las reseñas
       responses:
@@ -595,6 +633,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /reviews/{id}:
     get:
+      tags:
+        - Reviews
       summary: Devuelve una reseña por ID
       description: Devuelve los datos de una reseña específica
       parameters:
@@ -625,6 +665,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Reviews
       summary: Actualizar una reseña
       description: Actualiza los datos de una reseña existente
       parameters:
@@ -667,6 +709,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Reviews
       summary: Eliminar una reseña
       description: Elimina una reseña del sistema
       parameters:
@@ -694,6 +738,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /directors:
     get:
+      tags:
+        - Directors
       summary: Devuelve la lista de directores
       description: |
         Devuelve una lista con todos los directores disponibles
@@ -723,6 +769,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Directors
       summary: Registrar un director
       description: Registra un nuevo director
       requestBody:
@@ -752,6 +800,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /directors/{id}:
     get:
+      tags:
+        - Directors
       summary: Devuelve un director por ID
       description: Devuelve los datos de un director específico
       parameters:
@@ -782,6 +832,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Directors
       summary: Actualizar un director
       description: Actualiza los datos de un director existente
       parameters:
@@ -824,6 +876,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Directors
       summary: Eliminar un director
       description: Elimina un director del sistema
       parameters:
@@ -851,6 +905,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /studios:
     get:
+      tags:
+        - Studios
       summary: Devuelve la lista de productoras
       description: |
         Devuelve una lista con todas las productoras cinematográficas disponibles
@@ -880,6 +936,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - Studios
       summary: Registrar una productora
       description: Registra una nueva productora cinematográfica
       requestBody:
@@ -909,6 +967,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /studios/{id}:
     get:
+      tags:
+        - Studios
       summary: Devuelve una productora por ID
       description: Devuelve los datos de una productora específica
       parameters:
@@ -939,6 +999,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     put:
+      tags:
+        - Studios
       summary: Actualizar una productora
       description: Actualiza los datos de una productora existente
       parameters:
@@ -981,6 +1043,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     delete:
+      tags:
+        - Studios
       summary: Eliminar una productora
       description: Elimina una productora del sistema
       parameters:
