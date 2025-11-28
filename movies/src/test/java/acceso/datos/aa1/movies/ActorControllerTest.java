@@ -40,7 +40,7 @@ public class ActorControllerTest {
                 new ActorOutDto(2L, "Tom Hanks", "American", true, "Lead")
         );
 
-        when(actorService.findAll("")).thenReturn(actorsOutDto);
+        when(actorService.findAll(null, null, null)).thenReturn(actorsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/actors")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -52,7 +52,7 @@ public class ActorControllerTest {
 
         assertNotNull(actorsListResponse);
         assertEquals(2, actorsListResponse.size());
-        assertEquals("Leonardo DiCaprio", actorsListResponse.get(0).getName());
+        assertEquals("Leonardo DiCaprio", actorsListResponse.getFirst().getName());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ActorControllerTest {
                 new ActorOutDto(2L, "Tom Hanks", "American", true, "Lead")
         );
 
-        when(actorService.findAll("American")).thenReturn(actorsOutDto);
+        when(actorService.findAll("American", null, null)).thenReturn(actorsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/actors")
                         .queryParam("nationality", "American")
@@ -75,6 +75,6 @@ public class ActorControllerTest {
 
         assertNotNull(actorsListResponse);
         assertEquals(2, actorsListResponse.size());
-        assertEquals("Leonardo DiCaprio", actorsListResponse.get(0).getName());
+        assertEquals("Leonardo DiCaprio", actorsListResponse.getFirst().getName());
     }
 }

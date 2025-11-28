@@ -40,7 +40,7 @@ public class MovieControllerTest {
                 new MovieOutDto(2L, "The Matrix", "A hacker discovers reality", "Science Fiction", 8.7f, "http://image2.jpg")
         );
 
-        when(movieService.findAll("")).thenReturn(moviesOutDto);
+        when(movieService.findAll(null, null, null, null)).thenReturn(moviesOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/movies")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -52,7 +52,7 @@ public class MovieControllerTest {
 
         assertNotNull(moviesListResponse);
         assertEquals(2, moviesListResponse.size());
-        assertEquals("Catch Me If You Can", moviesListResponse.get(0).getTitle());
+        assertEquals("Catch Me If You Can", moviesListResponse.getFirst().getTitle());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class MovieControllerTest {
                 new MovieOutDto(2L, "Interstellar", "Space exploration", "Science Fiction", 8.6f, "http://image2.jpg")
         );
 
-        when(movieService.findAll("Action")).thenReturn(moviesOutDto);
+        when(movieService.findAll("Action", null, null, null)).thenReturn(moviesOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/movies")
                         .queryParam("genre", "Action")
@@ -75,6 +75,6 @@ public class MovieControllerTest {
 
         assertNotNull(moviesListResponse);
         assertEquals(2, moviesListResponse.size());
-        assertEquals("Catch Me If You Can", moviesListResponse.get(0).getTitle());
+        assertEquals("Catch Me If You Can", moviesListResponse.getFirst().getTitle());
     }
 }

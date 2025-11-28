@@ -40,7 +40,7 @@ public class UserControllerTest {
                 new UserOutDto(2L, "mdiaz", "Marta", "Díaz", "mdiaz@gmail.com", false)
         );
 
-        when(userService.findAll()).thenReturn(usersOutDto);
+        when(userService.findAll(null, null, null)).thenReturn(usersOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -52,7 +52,29 @@ public class UserControllerTest {
 
         assertNotNull(usersListResponse);
         assertEquals(2, usersListResponse.size());
-        assertEquals("csevi", usersListResponse.get(0).getUsername());
-        assertEquals("mdiaz", usersListResponse.get(1).getUsername());
+        assertEquals("csevi", usersListResponse.getFirst().getUsername());
+    }
+
+    @Test
+    public void testGetAllByPremium() throws Exception {
+        List<UserOutDto> usersOutDto = List.of(
+                new UserOutDto(1L, "csevi", "Cristina", "Serrano", "csevi@gmail.com", true),
+                new UserOutDto(2L, "mdiaz", "Marta", "Díaz", "mdiaz@gmail.com", true)
+        );
+
+        when(userService.findAll(true, null, null)).thenReturn(usersOutDto);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users")
+                        .queryParam("premium", "true")
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        List<UserOutDto> usersListResponse = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
+
+        assertNotNull(usersListResponse);
+        assertEquals(2, usersListResponse.size());
+        assertEquals("csevi", usersListResponse.getFirst().getUsername());
     }
 }

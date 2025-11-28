@@ -40,7 +40,7 @@ public class StudioControllerTest {
                 new StudioOutDto(2L, "Universal Pictures", "USA", true)
         );
 
-        when(studioService.findAll("")).thenReturn(studiosOutDto);
+        when(studioService.findAll(null, null, null)).thenReturn(studiosOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/studios")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -52,7 +52,7 @@ public class StudioControllerTest {
 
         assertNotNull(studiosListResponse);
         assertEquals(2, studiosListResponse.size());
-        assertEquals("Warner Bros", studiosListResponse.get(0).getName());
+        assertEquals("Warner Bros", studiosListResponse.getFirst().getName());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class StudioControllerTest {
                 new StudioOutDto(2L, "Universal Pictures", "USA", true)
         );
 
-        when(studioService.findAll("USA")).thenReturn(studiosOutDto);
+        when(studioService.findAll("USA", null, null)).thenReturn(studiosOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/studios")
                         .queryParam("country", "USA")
@@ -75,6 +75,6 @@ public class StudioControllerTest {
 
         assertNotNull(studiosListResponse);
         assertEquals(2, studiosListResponse.size());
-        assertEquals("Warner Bros", studiosListResponse.get(0).getName());
+        assertEquals("Warner Bros", studiosListResponse.getFirst().getName());
     }
 }

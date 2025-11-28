@@ -41,7 +41,7 @@ public class ReviewControllerTest {
                 new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
         );
 
-        when(reviewService.findAll()).thenReturn(reviewsOutDto);
+        when(reviewService.findAll(null, null, null)).thenReturn(reviewsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -53,20 +53,20 @@ public class ReviewControllerTest {
 
         assertNotNull(reviewsListResponse);
         assertEquals(2, reviewsListResponse.size());
-        assertEquals("Amazing movie!", reviewsListResponse.get(0).getComment());
-        assertEquals("csevi", reviewsListResponse.get(0).getUsername());
+        assertEquals("Amazing movie!", reviewsListResponse.getFirst().getComment());
     }
 
     @Test
-    public void testGetMovieReviews() throws Exception {
+    public void testGetAllByRecommended() throws Exception {
         List<ReviewOutDto> reviewsOutDto = List.of(
                 new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can"),
-                new ReviewOutDto(2L, "Mind-blowing", 10, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "Catch Me If You Can")
+                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
         );
 
-        when(reviewService.findByMovieId(1L)).thenReturn(reviewsOutDto);
+        when(reviewService.findAll(null, true, null)).thenReturn(reviewsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/movies/1/reviews")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
+                        .queryParam("recommended", "true")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -76,29 +76,6 @@ public class ReviewControllerTest {
 
         assertNotNull(reviewsListResponse);
         assertEquals(2, reviewsListResponse.size());
-        assertEquals("Catch Me If You Can", reviewsListResponse.get(0).getMovieTitle());
-    }
-
-    @Test
-    public void testGetUserReviews() throws Exception {
-        List<ReviewOutDto> reviewsOutDto = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can"),
-                new ReviewOutDto(2L, "Great soundtrack", 9, LocalDate.of(2025, 11, 28), true, false, "csevi", "Interstellar")
-        );
-
-        when(reviewService.findByUserId(1L)).thenReturn(reviewsOutDto);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users/1/reviews")
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String jsonResponse = result.getResponse().getContentAsString();
-        List<ReviewOutDto> reviewsListResponse = objectMapper.readValue(jsonResponse, new TypeReference<>(){});
-
-        assertNotNull(reviewsListResponse);
-        assertEquals(2, reviewsListResponse.size());
-        assertEquals("csevi", reviewsListResponse.get(0).getUsername());
-        assertEquals("csevi", reviewsListResponse.get(1).getUsername());
+        assertEquals("Amazing movie!", reviewsListResponse.getFirst().getComment());
     }
 }

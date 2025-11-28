@@ -34,89 +34,50 @@ public class ReviewServiceTest {
     @Test
     public void testFindAll() {
         List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Great film", 9)
+                new Review(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, null, null),
+                new Review(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, null, null)
         );
 
         List<ReviewOutDto> mockReviewOutDtoList = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
-                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28),
-                        true, false, "mdiaz", "The Matrix")
+                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Inception"),
+                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
         );
 
         when(reviewRepository.findAll()).thenReturn(mockReviewList);
         when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
 
-        List<ReviewOutDto> actualReviewList = reviewService.findAll();
+        List<ReviewOutDto> actualReviewList = reviewService.findAll(null, null, null);
 
         assertEquals(2, actualReviewList.size());
-        assertEquals("Amazing movie!", actualReviewList.get(0).getComment());
-        assertEquals("Great film", actualReviewList.get(1).getComment());
+        assertEquals("Amazing movie!", actualReviewList.getFirst().getComment());
+        assertEquals("Great film", actualReviewList.getLast().getComment());
 
         verify(reviewRepository, times(1)).findAll();
+        verify(reviewRepository, times(0)).findByRecommended(true);
     }
 
     @Test
-    public void testFindByMovieId() {
+    public void testFindAllByRecommended() {
         List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Mind-blowing", 10)
+                new Review(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, null, null),
+                new Review(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, null, null)
         );
 
         List<ReviewOutDto> mockReviewOutDtoList = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
-                new ReviewOutDto(2L, "Mind-blowing", 10, LocalDate.of(2025, 11, 28),
-                        true, false, "mdiaz", "Inception")
+                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Inception"),
+                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
         );
 
-        when(reviewRepository.findByMovieId(1L)).thenReturn(mockReviewList);
+        when(reviewRepository.findByRecommended(true)).thenReturn(mockReviewList);
         when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
 
-        List<ReviewOutDto> actualReviewList = reviewService.findByMovieId(1L);
+        List<ReviewOutDto> actualReviewList = reviewService.findAll(null, true, null);
 
         assertEquals(2, actualReviewList.size());
-        assertEquals("Inception", actualReviewList.get(0).getMovieTitle());
-        assertEquals("Inception", actualReviewList.get(1).getMovieTitle());
+        assertEquals("Amazing movie!", actualReviewList.getFirst().getComment());
+        assertEquals("Great film", actualReviewList.getLast().getComment());
 
-        verify(reviewRepository, times(1)).findByMovieId(1L);
-    }
-
-    @Test
-    public void testFindByUserId() {
-        List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Great soundtrack", 9)
-        );
-
-        List<ReviewOutDto> mockReviewOutDtoList = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
-                new ReviewOutDto(2L, "Great soundtrack", 9, LocalDate.of(2025, 11, 28),
-                        true, false, "csevi", "Interstellar")
-        );
-
-        when(reviewRepository.findByUserId(1L)).thenReturn(mockReviewList);
-        when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
-
-        List<ReviewOutDto> actualReviewList = reviewService.findByUserId(1L);
-
-        assertEquals(2, actualReviewList.size());
-        assertEquals("csevi", actualReviewList.get(0).getUsername());
-        assertEquals("csevi", actualReviewList.get(1).getUsername());
-
-        verify(reviewRepository, times(1)).findByUserId(1L);
-    }
-
-    private Review createMockReview(long id, String comment, int rating) {
-        Review review = new Review();
-        review.setId(id);
-        review.setComment(comment);
-        review.setRating(rating);
-        review.setReviewDate(LocalDate.now());
-        review.setRecommended(true);
-        review.setSpoiler(false);
-        return review;
+        verify(reviewRepository, times(0)).findAll();
+        verify(reviewRepository, times(1)).findByRecommended(true);
     }
 }
