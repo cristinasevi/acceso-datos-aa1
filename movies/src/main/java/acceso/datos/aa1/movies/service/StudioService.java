@@ -31,12 +31,36 @@ public class StudioService {
         studioRepository.delete(studio);
     }
 
-    public List<StudioOutDto> findAll(String country) {
+    public List<StudioOutDto> findAll(String country, Integer foundationYear, Boolean active) {
         List<Studio> studios;
 
-        if (country != null && !country.isEmpty()) {
+        boolean hasCountry = country != null && !country.isEmpty();
+        boolean hasFoundationYear = foundationYear != null;
+        boolean hasActive = active != null;
+
+        if (hasCountry && hasFoundationYear && hasActive) {
+            // 3 filtros
+            studios = studioRepository.findByCountryAndActiveAndFoundationYearGreaterThanEqual(country, active, foundationYear);
+        } else if (hasCountry && hasFoundationYear) {
+            // country + foundationYear
+            studios = studioRepository.findByCountryAndFoundationYearGreaterThanEqual(country, foundationYear);
+        } else if (hasCountry && hasActive) {
+            // country + active
+            studios = studioRepository.findByCountryAndActive(country, active);
+        } else if (hasFoundationYear && hasActive) {
+            // foundationYear + active
+            studios = studioRepository.findByActiveAndFoundationYearGreaterThanEqual(active, foundationYear);
+        } else if (hasCountry) {
+            // Solo country
             studios = studioRepository.findByCountry(country);
+        } else if (hasFoundationYear) {
+            // Solo foundationYear
+            studios = studioRepository.findByFoundationYearGreaterThanEqual(foundationYear);
+        } else if (hasActive) {
+            // Solo active
+            studios = studioRepository.findByActive(active);
         } else {
+            // Sin filtros
             studios = studioRepository.findAll();
         }
 

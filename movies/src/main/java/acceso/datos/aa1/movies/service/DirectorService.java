@@ -32,12 +32,36 @@ public class DirectorService {
         directorRepository.delete(director);
     }
 
-    public List<DirectorOutDto> findAll(String nationality) {
+    public List<DirectorOutDto> findAll(String nationality, Boolean active, Integer minAwards) {
         List<Director> directors;
 
-        if (nationality != null && !nationality.isEmpty()) {
+        boolean hasNationality = nationality != null && !nationality.isEmpty();
+        boolean hasActive = active != null;
+        boolean hasMinAwards = minAwards != null;
+
+        if (hasNationality && hasActive && hasMinAwards) {
+            // 3 filtros
+            directors = directorRepository.findByNationalityAndActiveAndAwardsGreaterThanEqual(nationality, active, minAwards);
+        } else if (hasNationality && hasActive) {
+            // nationality + active
+            directors = directorRepository.findByNationalityAndActive(nationality, active);
+        } else if (hasNationality && hasMinAwards) {
+            // nationality + minAwards
+            directors = directorRepository.findByNationalityAndAwardsGreaterThanEqual(nationality, minAwards);
+        } else if (hasActive && hasMinAwards) {
+            // active + minAwards
+            directors = directorRepository.findByActiveAndAwardsGreaterThanEqual(active, minAwards);
+        } else if (hasNationality) {
+            // Solo nationality
             directors = directorRepository.findByNationality(nationality);
+        } else if (hasActive) {
+            // Solo active
+            directors = directorRepository.findByActive(active);
+        } else if (hasMinAwards) {
+            // Solo minAwards
+            directors = directorRepository.findByAwardsGreaterThanEqual(minAwards);
         } else {
+            // Sin filtros
             directors = directorRepository.findAll();
         }
 

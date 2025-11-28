@@ -14,4 +14,16 @@ public interface DirectorRepository extends CrudRepository<Director, Long> {
     List<Director> findByNationality(String nationality);
 
     List<Director> findByActive(Boolean active);
+
+    List<Director> findByAwardsGreaterThanEqual(Integer minAwards);
+
+    // Combinaciones de 2 filtros
+    List<Director> findByNationalityAndActive(String nationality, Boolean active);
+
+    List<Director> findByNationalityAndAwardsGreaterThanEqual(String nationality, Integer minAwards);
+
+    List<Director> findByActiveAndAwardsGreaterThanEqual(Boolean active, Integer minAwards);
+
+    // Combinación de 3 filtros
+    List<Director> findByNationalityAndActiveAndAwardsGreaterThanEqual(String nationality, Boolean active, Integer minAwards);
 }

@@ -32,12 +32,36 @@ public class ActorService {
         actorRepository.delete(actor);
     }
 
-    public List<ActorOutDto> findAll(String nationality) {
+    public List<ActorOutDto> findAll(String nationality, Boolean active, String actorType) {
         List<Actor> actors;
 
-        if (nationality != null && !nationality.isEmpty()) {
+        boolean hasNationality = nationality != null && !nationality.isEmpty();
+        boolean hasActive = active != null;
+        boolean hasActorType = actorType != null && !actorType.isEmpty();
+
+        if (hasNationality && hasActive && hasActorType) {
+            // 3 filtros
+            actors = actorRepository.findByNationalityAndActiveAndActorType(nationality, active, actorType);
+        } else if (hasNationality && hasActive) {
+            // nationality + active
+            actors = actorRepository.findByNationalityAndActive(nationality, active);
+        } else if (hasNationality && hasActorType) {
+            // nationality + actorType
+            actors = actorRepository.findByNationalityAndActorType(nationality, actorType);
+        } else if (hasActive && hasActorType) {
+            // active + actorType
+            actors = actorRepository.findByActiveAndActorType(active, actorType);
+        } else if (hasNationality) {
+            // Solo nationality
             actors = actorRepository.findByNationality(nationality);
+        } else if (hasActive) {
+            // Solo active
+            actors = actorRepository.findByActive(active);
+        } else if (hasActorType) {
+            // Solo actorType
+            actors = actorRepository.findByActorType(actorType);
         } else {
+            // Sin filtros
             actors = actorRepository.findAll();
         }
 

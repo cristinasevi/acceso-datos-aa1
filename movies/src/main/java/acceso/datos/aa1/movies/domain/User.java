@@ -54,6 +54,9 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
+    @Column
+    private Boolean active;
+
     @OneToMany(mappedBy = "user")
     @JsonBackReference
     private List<Review> reviews;

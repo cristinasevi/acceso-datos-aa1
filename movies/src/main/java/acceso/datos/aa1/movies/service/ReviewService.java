@@ -60,8 +60,39 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    public List<ReviewOutDto> findAll() {
-        List<Review> reviews = reviewRepository.findAll();
+    public List<ReviewOutDto> findAll(Integer minRating, Boolean recommended, Boolean spoiler) {
+        List<Review> reviews;
+
+        boolean hasMinRating = minRating != null;
+        boolean hasRecommended = recommended != null;
+        boolean hasSpoiler = spoiler != null;
+
+        if (hasMinRating && hasRecommended && hasSpoiler) {
+            // 3 filtros
+            reviews = reviewRepository.findByRatingGreaterThanEqualAndRecommendedAndSpoiler(minRating, recommended, spoiler);
+        } else if (hasMinRating && hasRecommended) {
+            // minRating + recommended
+            reviews = reviewRepository.findByRatingGreaterThanEqualAndRecommended(minRating, recommended);
+        } else if (hasMinRating && hasSpoiler) {
+            // minRating + spoiler
+            reviews = reviewRepository.findByRatingGreaterThanEqualAndSpoiler(minRating, spoiler);
+        } else if (hasRecommended && hasSpoiler) {
+            // recommended + spoiler
+            reviews = reviewRepository.findByRecommendedAndSpoiler(recommended, spoiler);
+        } else if (hasMinRating) {
+            // Solo minRating
+            reviews = reviewRepository.findByRatingGreaterThanEqual(minRating);
+        } else if (hasRecommended) {
+            // Solo recommended
+            reviews = reviewRepository.findByRecommended(recommended);
+        } else if (hasSpoiler) {
+            // Solo spoiler
+            reviews = reviewRepository.findBySpoiler(spoiler);
+        } else {
+            // Sin filtros
+            reviews = reviewRepository.findAll();
+        }
+
         return mapToOutDto(reviews);
     }
 

@@ -8,12 +8,14 @@ import acceso.datos.aa1.movies.exception.MovieNotFoundException;
 import acceso.datos.aa1.movies.service.MovieService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,14 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/movies")
-    public ResponseEntity<List<MovieOutDto>> getAll(@RequestParam(value = "genre", defaultValue = "") String genre) {
-        List<MovieOutDto> movies = movieService.findAll(genre);
+    public ResponseEntity<List<MovieOutDto>> getAll(
+            @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "releaseDateFrom", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseDateFrom,
+            @RequestParam(value = "releaseDateTo", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate releaseDateTo,
+            @RequestParam(value = "minRating", required = false) Float minRating) {
+        List<MovieOutDto> movies = movieService.findAll(genre, releaseDateFrom, releaseDateTo, minRating);
         return ResponseEntity.ok(movies);
     }
 

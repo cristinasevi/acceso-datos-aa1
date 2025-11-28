@@ -33,12 +33,70 @@ public class MovieService {
         movieRepository.delete(movie);
     }
 
-    public List<MovieOutDto> findAll(String genre) {
+    public List<MovieOutDto> findAll(String genre, LocalDate releaseDateFrom, LocalDate releaseDateTo, Float minRating) {
         List<Movie> movies;
 
-        if (genre != null && !genre.isEmpty()) {
+        boolean hasGenre = genre != null && !genre.isEmpty();
+        boolean hasFrom = releaseDateFrom != null;
+        boolean hasTo = releaseDateTo != null;
+        boolean hasRating = minRating != null;
+
+        // Rango de fechas completo (from y to)
+        boolean hasDateRange = hasFrom && hasTo;
+
+        if (hasGenre && hasRating && hasDateRange) {
+            // 3 filtros: genre + rating + rango fechas
+            movies = movieRepository.findByGenreAndAverageRatingGreaterThanEqualAndReleaseDateBetween(
+                    genre, minRating, releaseDateFrom, releaseDateTo);
+        } else if (hasGenre && hasRating && hasFrom) {
+            // genre + rating + desde
+            movies = movieRepository.findByGenreAndAverageRatingGreaterThanEqualAndReleaseDateGreaterThanEqual(
+                    genre, minRating, releaseDateFrom);
+        } else if (hasGenre && hasRating && hasTo) {
+            // genre + rating + hasta
+            movies = movieRepository.findByGenreAndAverageRatingGreaterThanEqualAndReleaseDateLessThanEqual(
+                    genre, minRating, releaseDateTo);
+        } else if (hasGenre && hasDateRange) {
+            // genre + rango fechas
+            movies = movieRepository.findByGenreAndReleaseDateBetween(genre, releaseDateFrom, releaseDateTo);
+        } else if (hasGenre && hasFrom) {
+            // genre + desde
+            movies = movieRepository.findByGenreAndReleaseDateGreaterThanEqual(genre, releaseDateFrom);
+        } else if (hasGenre && hasTo) {
+            // genre + hasta
+            movies = movieRepository.findByGenreAndReleaseDateLessThanEqual(genre, releaseDateTo);
+        } else if (hasGenre && hasRating) {
+            // genre + rating
+            movies = movieRepository.findByGenreAndAverageRatingGreaterThanEqual(genre, minRating);
+        } else if (hasRating && hasDateRange) {
+            // rating + rango fechas
+            movies = movieRepository.findByAverageRatingGreaterThanEqualAndReleaseDateBetween(
+                    minRating, releaseDateFrom, releaseDateTo);
+        } else if (hasRating && hasFrom) {
+            // rating + desde
+            movies = movieRepository.findByAverageRatingGreaterThanEqualAndReleaseDateGreaterThanEqual(
+                    minRating, releaseDateFrom);
+        } else if (hasRating && hasTo) {
+            // rating + hasta
+            movies = movieRepository.findByAverageRatingGreaterThanEqualAndReleaseDateLessThanEqual(
+                    minRating, releaseDateTo);
+        } else if (hasGenre) {
+            // Solo genre
             movies = movieRepository.findByGenre(genre);
+        } else if (hasRating) {
+            // Solo rating
+            movies = movieRepository.findByAverageRatingGreaterThanEqual(minRating);
+        } else if (hasDateRange) {
+            // Solo rango fechas
+            movies = movieRepository.findByReleaseDateBetween(releaseDateFrom, releaseDateTo);
+        } else if (hasFrom) {
+            // Solo desde
+            movies = movieRepository.findByReleaseDateGreaterThanEqual(releaseDateFrom);
+        } else if (hasTo) {
+            // Solo hasta
+            movies = movieRepository.findByReleaseDateLessThanEqual(releaseDateTo);
         } else {
+            // Sin filtros
             movies = movieRepository.findAll();
         }
 

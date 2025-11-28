@@ -25,8 +25,11 @@ public class StudioController {
     private StudioService studioService;
 
     @GetMapping("/studios")
-    public ResponseEntity<List<StudioOutDto>> getAll(@RequestParam(value = "country", defaultValue = "") String country) {
-        List<StudioOutDto> studios = studioService.findAll(country);
+    public ResponseEntity<List<StudioOutDto>> getAll(
+            @RequestParam(value = "country", required = false) String country,
+            @RequestParam(value = "foundationYear", required = false) Integer foundationYear,
+            @RequestParam(value = "active", required = false) Boolean active) {
+        List<StudioOutDto> studios = studioService.findAll(country, foundationYear, active);
         return ResponseEntity.ok(studios);
     }
 

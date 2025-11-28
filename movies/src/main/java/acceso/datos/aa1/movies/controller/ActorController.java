@@ -25,8 +25,11 @@ public class ActorController {
     private ActorService actorService;
 
     @GetMapping("/actors")
-    public ResponseEntity<List<ActorOutDto>> getAll(@RequestParam(value = "nationality", defaultValue = "") String nationality) {
-        List<ActorOutDto> actors = actorService.findAll(nationality);
+    public ResponseEntity<List<ActorOutDto>> getAll(
+            @RequestParam(value = "nationality", required = false) String nationality,
+            @RequestParam(value = "active", required = false) Boolean active,
+            @RequestParam(value = "actorType", required = false) String actorType) {
+        List<ActorOutDto> actors = actorService.findAll(nationality, active, actorType);
         return ResponseEntity.ok(actors);
     }
 

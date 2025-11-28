@@ -25,8 +25,11 @@ public class DirectorController {
     private DirectorService directorService;
 
     @GetMapping("/directors")
-    public ResponseEntity<List<DirectorOutDto>> getAll(@RequestParam(value = "nationality", defaultValue = "") String nationality) {
-        List<DirectorOutDto> directors = directorService.findAll(nationality);
+    public ResponseEntity<List<DirectorOutDto>> getAll(
+            @RequestParam(value = "nationality", required = false) String nationality,
+            @RequestParam(value = "active", required = false) Boolean active,
+            @RequestParam(value = "minAwards", required = false) Integer minAwards) {
+        List<DirectorOutDto> directors = directorService.findAll(nationality, active, minAwards);
         return ResponseEntity.ok(directors);
     }
 

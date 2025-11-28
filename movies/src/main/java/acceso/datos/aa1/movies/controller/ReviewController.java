@@ -28,8 +28,11 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewOutDto>> getAll() {
-        List<ReviewOutDto> reviews = reviewService.findAll();
+    public ResponseEntity<List<ReviewOutDto>> getAll(
+            @RequestParam(value = "minRating", required = false) Integer minRating,
+            @RequestParam(value = "recommended", required = false) Boolean recommended,
+            @RequestParam(value = "spoiler", required = false) Boolean spoiler) {
+        List<ReviewOutDto> reviews = reviewService.findAll(minRating, recommended, spoiler);
         return ResponseEntity.ok(reviews);
     }
 

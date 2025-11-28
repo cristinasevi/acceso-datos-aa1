@@ -20,4 +20,20 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
     List<Review> findByMovieId(Long movieId);
 
     List<Review> findByUserId(Long userId);
+
+    List<Review> findByRatingGreaterThanEqual(Integer minRating);
+
+    List<Review> findByRecommended(Boolean recommended);
+
+    List<Review> findBySpoiler(Boolean spoiler);
+
+    // Combinaciones de 2 filtros
+    List<Review> findByRatingGreaterThanEqualAndRecommended(Integer minRating, Boolean recommended);
+
+    List<Review> findByRatingGreaterThanEqualAndSpoiler(Integer minRating, Boolean spoiler);
+
+    List<Review> findByRecommendedAndSpoiler(Boolean recommended, Boolean spoiler);
+
+    // Combinación de 3 filtros
+    List<Review> findByRatingGreaterThanEqualAndRecommendedAndSpoiler(Integer minRating, Boolean recommended, Boolean spoiler);
 }
