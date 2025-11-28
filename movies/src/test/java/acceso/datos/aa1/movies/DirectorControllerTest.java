@@ -40,7 +40,7 @@ public class DirectorControllerTest {
                 new DirectorOutDto(2L, "Steven Spielberg", "American", true)
         );
 
-        when(directorService.findAll("")).thenReturn(directorsOutDto);
+        when(directorService.findAll(null, null, null)).thenReturn(directorsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/directors")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -52,7 +52,7 @@ public class DirectorControllerTest {
 
         assertNotNull(directorsListResponse);
         assertEquals(2, directorsListResponse.size());
-        assertEquals("Christopher Nolan", directorsListResponse.get(0).getName());
+        assertEquals("Christopher Nolan", directorsListResponse.getFirst().getName());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class DirectorControllerTest {
                 new DirectorOutDto(2L, "Steven Spielberg", "American", true)
         );
 
-        when(directorService.findAll("British")).thenReturn(directorsOutDto);
+        when(directorService.findAll("British", null, null)).thenReturn(directorsOutDto);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/directors")
                         .queryParam("nationality", "British")
@@ -75,6 +75,6 @@ public class DirectorControllerTest {
 
         assertNotNull(directorsListResponse);
         assertEquals(2, directorsListResponse.size());
-        assertEquals("Christopher Nolan", directorsListResponse.get(0).getName());
+        assertEquals("Christopher Nolan", directorsListResponse.getFirst().getName());
     }
 }

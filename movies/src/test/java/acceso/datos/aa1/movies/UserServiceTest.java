@@ -33,8 +33,8 @@ public class UserServiceTest {
     @Test
     public void testFindAll() {
         List<User> mockUserList = List.of(
-                createMockUser(1, "csevi", "Cristina", "Serrano"),
-                createMockUser(2, "mdiaz", "Marta", "Díaz")
+                new User(1L, "csevi", "Cristina", "Serrano", "csevi@gmail.com", "password123", LocalDate.now(), true, LocalDate.of(2000, 1, 1), true, null),
+                new User(2L, "mdiaz", "Marta", "Díaz", "mdiaz@gmail.com", "password456", LocalDate.now(), false, LocalDate.of(1995, 5, 15), true, null)
         );
         List<UserOutDto> modelMapperOut = List.of(
                 new UserOutDto(1L, "csevi", "Cristina", "Serrano", "csevi@gmail.com", true),
@@ -44,25 +44,35 @@ public class UserServiceTest {
         when(userRepository.findAll()).thenReturn(mockUserList);
         when(modelMapper.map(mockUserList, new TypeToken<List<UserOutDto>>() {}.getType())).thenReturn(modelMapperOut);
 
-        List<UserOutDto> actualUserList = userService.findAll();
+        List<UserOutDto> actualUserList = userService.findAll(null, null, null);
         assertEquals(2, actualUserList.size());
-        assertEquals("csevi", actualUserList.get(0).getUsername());
-        assertEquals("mdiaz", actualUserList.get(1).getUsername());
+        assertEquals("csevi", actualUserList.getFirst().getUsername());
+        assertEquals("mdiaz", actualUserList.getLast().getUsername());
 
         verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(0)).findByPremium(true);
     }
 
-    private User createMockUser(long id, String username, String name, String surname) {
-        User user = new User();
-        user.setId(id);
-        user.setUsername(username);
-        user.setName(name);
-        user.setSurname(surname);
-        user.setEmail(username + "@gmail.com");
-        user.setPassword("password123");
-        user.setRegistrationDate(LocalDate.now());
-        user.setPremium(id == 1);
-        user.setBirthDate(LocalDate.of(2000, 1, 1));
-        return user;
+    @Test
+    public void testFindAllByPremium() {
+        List<User> mockUserList = List.of(
+                new User(1L, "csevi", "Cristina", "Serrano", "csevi@gmail.com", "password123", LocalDate.now(), true, LocalDate.of(2000, 1, 1), true, null),
+                new User(2L, "mdiaz", "Marta", "Díaz", "mdiaz@gmail.com", "password789", LocalDate.now(), true, LocalDate.of(1990, 3, 20), true, null)
+        );
+        List<UserOutDto> mockModelMapperOut = List.of(
+                new UserOutDto(1L, "csevi", "Cristina", "Serrano", "csevi@gmail.com", true),
+                new UserOutDto(2L, "mdiaz", "Marta", "Díaz", "mdiaz@gmail.com", true)
+        );
+
+        when(userRepository.findByPremium(true)).thenReturn(mockUserList);
+        when(modelMapper.map(mockUserList, new TypeToken<List<UserOutDto>>() {}.getType())).thenReturn(mockModelMapperOut);
+
+        List<UserOutDto> actualUserList = userService.findAll(true, null, null);
+        assertEquals(2, actualUserList.size());
+        assertEquals("csevi", actualUserList.getFirst().getUsername());
+        assertEquals("mdiaz", actualUserList.getLast().getUsername());
+
+        verify(userRepository, times(0)).findAll();
+        verify(userRepository, times(1)).findByPremium(true);
     }
 }

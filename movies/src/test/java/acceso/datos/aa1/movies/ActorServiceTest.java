@@ -33,8 +33,8 @@ public class ActorServiceTest {
     @Test
     public void testFindAll() {
         List<Actor> mockActorList = List.of(
-                createMockActor(1, "Leonardo DiCaprio", "American"),
-                createMockActor(2, "Tom Hanks", "American")
+                new Actor(1L, "Leonardo DiCaprio", "American", LocalDate.of(1974, 11, 11), true, 1, "Lead", "photo1.jpg", null),
+                new Actor(2L, "Tom Hanks", "American", LocalDate.of(1956, 7, 9), true, 2, "Lead", "photo2.jpg", null)
         );
         List<ActorOutDto> modelMapperOut = List.of(
                 new ActorOutDto(1L, "Leonardo DiCaprio", "American", true, "Lead"),
@@ -44,20 +44,20 @@ public class ActorServiceTest {
         when(actorRepository.findAll()).thenReturn(mockActorList);
         when(modelMapper.map(mockActorList, new TypeToken<List<ActorOutDto>>() {}.getType())).thenReturn(modelMapperOut);
 
-        List<ActorOutDto> actualActorList = actorService.findAll("");
+        List<ActorOutDto> actualActorList = actorService.findAll(null, null, null);
         assertEquals(2, actualActorList.size());
-        assertEquals("Leonardo DiCaprio", actualActorList.get(0).getName());
-        assertEquals("Tom Hanks", actualActorList.get(1).getName());
+        assertEquals("Leonardo DiCaprio", actualActorList.getFirst().getName());
+        assertEquals("Tom Hanks", actualActorList.getLast().getName());
 
         verify(actorRepository, times(1)).findAll();
-        verify(actorRepository, times(0)).findByNationality("");
+        verify(actorRepository, times(0)).findByNationality("American");
     }
 
     @Test
     public void testFindAllByNationality() {
         List<Actor> mockActorList = List.of(
-                createMockActor(1, "Leonardo DiCaprio", "American"),
-                createMockActor(2, "Tom Hanks", "American")
+                new Actor(1L, "Leonardo DiCaprio", "American", LocalDate.of(1974, 11, 11), true, 1, "Lead", "photo1.jpg", null),
+                new Actor(2L, "Tom Hanks", "American", LocalDate.of(1956, 7, 9), true, 2, "Lead", "photo2.jpg", null)
         );
         List<ActorOutDto> mockModelMapperOut = List.of(
                 new ActorOutDto(1L, "Leonardo DiCaprio", "American", true, "Lead"),
@@ -67,24 +67,12 @@ public class ActorServiceTest {
         when(actorRepository.findByNationality("American")).thenReturn(mockActorList);
         when(modelMapper.map(mockActorList, new TypeToken<List<ActorOutDto>>() {}.getType())).thenReturn(mockModelMapperOut);
 
-        List<ActorOutDto> actualActorList = actorService.findAll("American");
+        List<ActorOutDto> actualActorList = actorService.findAll("American", null, null);
         assertEquals(2, actualActorList.size());
-        assertEquals("Leonardo DiCaprio", actualActorList.get(0).getName());
-        assertEquals("Tom Hanks", actualActorList.get(1).getName());
+        assertEquals("Leonardo DiCaprio", actualActorList.getFirst().getName());
+        assertEquals("Tom Hanks", actualActorList.getLast().getName());
 
         verify(actorRepository, times(0)).findAll();
         verify(actorRepository, times(1)).findByNationality("American");
-    }
-
-    private Actor createMockActor(long id, String name, String nationality) {
-        Actor actor = new Actor();
-        actor.setId(id);
-        actor.setName(name);
-        actor.setNationality(nationality);
-        actor.setBirthDate(LocalDate.of(1974, 11, 11));
-        actor.setActive(true);
-        actor.setAwards(1);
-        actor.setActorType("Lead");
-        return actor;
     }
 }

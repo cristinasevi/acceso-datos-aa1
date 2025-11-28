@@ -33,8 +33,8 @@ public class DirectorServiceTest {
     @Test
     public void testFindAll() {
         List<Director> mockDirectorList = List.of(
-                createMockDirector(1, "Christopher Nolan", "British"),
-                createMockDirector(2, "Steven Spielberg", "American")
+                new Director(1L, "Christopher Nolan", "British", LocalDate.of(1970, 7, 30), true, 5, "photo1.jpg", null),
+                new Director(2L, "Steven Spielberg", "American", LocalDate.of(1946, 12, 18), true, 3, "photo2.jpg", null)
         );
         List<DirectorOutDto> modelMapperOut = List.of(
                 new DirectorOutDto(1L, "Christopher Nolan", "British", true),
@@ -44,20 +44,20 @@ public class DirectorServiceTest {
         when(directorRepository.findAll()).thenReturn(mockDirectorList);
         when(modelMapper.map(mockDirectorList, new TypeToken<List<DirectorOutDto>>() {}.getType())).thenReturn(modelMapperOut);
 
-        List<DirectorOutDto> actualDirectorList = directorService.findAll("");
+        List<DirectorOutDto> actualDirectorList = directorService.findAll(null, null, null);
         assertEquals(2, actualDirectorList.size());
-        assertEquals("Christopher Nolan", actualDirectorList.get(0).getName());
-        assertEquals("Steven Spielberg", actualDirectorList.get(1).getName());
+        assertEquals("Christopher Nolan", actualDirectorList.getFirst().getName());
+        assertEquals("Steven Spielberg", actualDirectorList.getLast().getName());
 
         verify(directorRepository, times(1)).findAll();
-        verify(directorRepository, times(0)).findByNationality("");
+        verify(directorRepository, times(0)).findByNationality("British");
     }
 
     @Test
     public void testFindAllByNationality() {
         List<Director> mockDirectorList = List.of(
-                createMockDirector(1, "Christopher Nolan", "British"),
-                createMockDirector(2, "Steven Spielberg", "American")
+                new Director(1L, "Christopher Nolan", "British", LocalDate.of(1970, 7, 30), true, 5, "photo1.jpg", null),
+                new Director(2L, "Steven Spielberg", "American", LocalDate.of(1946, 12, 18), true, 3, "photo2.jpg", null)
         );
         List<DirectorOutDto> mockModelMapperOut = List.of(
                 new DirectorOutDto(1L, "Christopher Nolan", "British", true),
@@ -67,23 +67,12 @@ public class DirectorServiceTest {
         when(directorRepository.findByNationality("British")).thenReturn(mockDirectorList);
         when(modelMapper.map(mockDirectorList, new TypeToken<List<DirectorOutDto>>() {}.getType())).thenReturn(mockModelMapperOut);
 
-        List<DirectorOutDto> actualDirectorList = directorService.findAll("British");
+        List<DirectorOutDto> actualDirectorList = directorService.findAll("British", null, null);
         assertEquals(2, actualDirectorList.size());
-        assertEquals("Christopher Nolan", actualDirectorList.get(0).getName());
-        assertEquals("Steven Spielberg", actualDirectorList.get(1).getName());
+        assertEquals("Christopher Nolan", actualDirectorList.getFirst().getName());
+        assertEquals("Steven Spielberg", actualDirectorList.getLast().getName());
 
         verify(directorRepository, times(0)).findAll();
         verify(directorRepository, times(1)).findByNationality("British");
-    }
-
-    private Director createMockDirector(long id, String name, String nationality) {
-        Director director = new Director();
-        director.setId(id);
-        director.setName(name);
-        director.setNationality(nationality);
-        director.setBirthDate(LocalDate.of(1970, 7, 30));
-        director.setActive(true);
-        director.setAwards(5);
-        return director;
     }
 }

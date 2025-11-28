@@ -32,8 +32,8 @@ public class StudioServiceTest {
     @Test
     public void testFindAll() {
         List<Studio> mockStudioList = List.of(
-                createMockStudio(1, "Warner Bros", "USA"),
-                createMockStudio(2, "Universal Pictures", "USA")
+                new Studio(1L, "Warner Bros", "USA", 1923, "Los Angeles", "photo1.jpg", true, null),
+                new Studio(2L, "Universal Pictures", "USA", 1912, "Universal City", "photo2.jpg", true, null)
         );
         List<StudioOutDto> modelMapperOut = List.of(
                 new StudioOutDto(1L, "Warner Bros", "USA", true),
@@ -43,20 +43,20 @@ public class StudioServiceTest {
         when(studioRepository.findAll()).thenReturn(mockStudioList);
         when(modelMapper.map(mockStudioList, new TypeToken<List<StudioOutDto>>() {}.getType())).thenReturn(modelMapperOut);
 
-        List<StudioOutDto> actualStudioList = studioService.findAll("");
+        List<StudioOutDto> actualStudioList = studioService.findAll(null, null, null);
         assertEquals(2, actualStudioList.size());
-        assertEquals("Warner Bros", actualStudioList.get(0).getName());
-        assertEquals("Universal Pictures", actualStudioList.get(1).getName());
+        assertEquals("Warner Bros", actualStudioList.getFirst().getName());
+        assertEquals("Universal Pictures", actualStudioList.getLast().getName());
 
         verify(studioRepository, times(1)).findAll();
-        verify(studioRepository, times(0)).findByCountry("");
+        verify(studioRepository, times(0)).findByCountry("USA");
     }
 
     @Test
     public void testFindAllByCountry() {
         List<Studio> mockStudioList = List.of(
-                createMockStudio(1, "Warner Bros", "USA"),
-                createMockStudio(2, "Universal Pictures", "USA")
+                new Studio(1L, "Warner Bros", "USA", 1923, "Los Angeles", "photo1.jpg", true, null),
+                new Studio(2L, "Universal Pictures", "USA", 1912, "Universal City", "photo2.jpg", true, null)
         );
         List<StudioOutDto> mockModelMapperOut = List.of(
                 new StudioOutDto(1L, "Warner Bros", "USA", true),
@@ -66,22 +66,12 @@ public class StudioServiceTest {
         when(studioRepository.findByCountry("USA")).thenReturn(mockStudioList);
         when(modelMapper.map(mockStudioList, new TypeToken<List<StudioOutDto>>() {}.getType())).thenReturn(mockModelMapperOut);
 
-        List<StudioOutDto> actualStudioList = studioService.findAll("USA");
+        List<StudioOutDto> actualStudioList = studioService.findAll("USA", null, null);
         assertEquals(2, actualStudioList.size());
-        assertEquals("Warner Bros", actualStudioList.get(0).getName());
-        assertEquals("Universal Pictures", actualStudioList.get(1).getName());
+        assertEquals("Warner Bros", actualStudioList.getFirst().getName());
+        assertEquals("Universal Pictures", actualStudioList.getLast().getName());
 
         verify(studioRepository, times(0)).findAll();
         verify(studioRepository, times(1)).findByCountry("USA");
-    }
-
-    private Studio createMockStudio(long id, String name, String country) {
-        Studio studio = new Studio();
-        studio.setId(id);
-        studio.setName(name);
-        studio.setCountry(country);
-        studio.setFoundationYear(1923);
-        studio.setActive(true);
-        return studio;
     }
 }
