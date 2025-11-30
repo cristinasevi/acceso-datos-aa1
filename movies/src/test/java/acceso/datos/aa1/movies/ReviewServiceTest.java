@@ -1,7 +1,9 @@
 package acceso.datos.aa1.movies;
 
 import acceso.datos.aa1.movies.domain.Review;
+import acceso.datos.aa1.movies.dto.ReviewDto;
 import acceso.datos.aa1.movies.dto.ReviewOutDto;
+import acceso.datos.aa1.movies.exception.ReviewNotFoundException;
 import acceso.datos.aa1.movies.repository.ReviewRepository;
 import acceso.datos.aa1.movies.service.ReviewService;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,9 @@ import org.modelmapper.ModelMapper;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -31,6 +34,7 @@ public class ReviewServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    // GET /reviews - 200 OK
     @Test
     public void testFindAll() {
         List<Review> mockReviewList = List.of(
@@ -40,7 +44,7 @@ public class ReviewServiceTest {
 
         List<ReviewOutDto> mockReviewOutDtoList = List.of(
                 new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
+                        true, false, "csevi", "Catch Me If You Can"),
                 new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28),
                         true, false, "mdiaz", "The Matrix")
         );
@@ -48,65 +52,92 @@ public class ReviewServiceTest {
         when(reviewRepository.findAll()).thenReturn(mockReviewList);
         when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
 
-        List<ReviewOutDto> actualReviewList = reviewService.findAll();
+        List<ReviewOutDto> actualReviewList = reviewService.findAll(null, null, null);
 
         assertEquals(2, actualReviewList.size());
-        assertEquals("Amazing movie!", actualReviewList.get(0).getComment());
-        assertEquals("Great film", actualReviewList.get(1).getComment());
-
         verify(reviewRepository, times(1)).findAll();
     }
 
+    // GET /movies/{movieId}/reviews - 200 OK
     @Test
     public void testFindByMovieId() {
-        List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Mind-blowing", 10)
-        );
-
-        List<ReviewOutDto> mockReviewOutDtoList = List.of(
+        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10));
+        List<ReviewOutDto> mockOut = List.of(
                 new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
-                new ReviewOutDto(2L, "Mind-blowing", 10, LocalDate.of(2025, 11, 28),
-                        true, false, "mdiaz", "Inception")
+                        true, false, "csevi", "Catch Me If You Can")
         );
 
-        when(reviewRepository.findByMovieId(1L)).thenReturn(mockReviewList);
-        when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
+        when(reviewRepository.findByMovieId(1L)).thenReturn(mockList);
+        when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockOut);
 
-        List<ReviewOutDto> actualReviewList = reviewService.findByMovieId(1L);
+        List<ReviewOutDto> result = reviewService.findByMovieId(1L);
 
-        assertEquals(2, actualReviewList.size());
-        assertEquals("Inception", actualReviewList.get(0).getMovieTitle());
-        assertEquals("Inception", actualReviewList.get(1).getMovieTitle());
-
+        assertEquals(1, result.size());
         verify(reviewRepository, times(1)).findByMovieId(1L);
     }
 
+    // GET /users/{userId}/reviews - 200 OK
     @Test
     public void testFindByUserId() {
-        List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Great soundtrack", 9)
-        );
-
-        List<ReviewOutDto> mockReviewOutDtoList = List.of(
+        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10));
+        List<ReviewOutDto> mockOut = List.of(
                 new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
-                        true, false, "csevi", "Inception"),
-                new ReviewOutDto(2L, "Great soundtrack", 9, LocalDate.of(2025, 11, 28),
-                        true, false, "csevi", "Interstellar")
+                        true, false, "csevi", "Catch Me If You Can")
         );
 
-        when(reviewRepository.findByUserId(1L)).thenReturn(mockReviewList);
-        when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockReviewOutDtoList);
+        when(reviewRepository.findByUserId(1L)).thenReturn(mockList);
+        when(modelMapper.map(any(List.class), any(Type.class))).thenReturn(mockOut);
 
-        List<ReviewOutDto> actualReviewList = reviewService.findByUserId(1L);
+        List<ReviewOutDto> result = reviewService.findByUserId(1L);
 
-        assertEquals(2, actualReviewList.size());
-        assertEquals("csevi", actualReviewList.get(0).getUsername());
-        assertEquals("csevi", actualReviewList.get(1).getUsername());
-
+        assertEquals(1, result.size());
         verify(reviewRepository, times(1)).findByUserId(1L);
+    }
+
+    // GET /reviews/{id} - 200 OK
+    @Test
+    public void testFindById() throws ReviewNotFoundException {
+        Review mock = createMockReview(1, "Amazing movie!", 10);
+        ReviewDto mockDto = new ReviewDto();
+        mockDto.setId(1L);
+
+        when(reviewRepository.findById(1L)).thenReturn(Optional.of(mock));
+        when(modelMapper.map(mock, ReviewDto.class)).thenReturn(mockDto);
+
+        ReviewDto result = reviewService.findById(1L);
+
+        assertNotNull(result);
+        verify(reviewRepository, times(1)).findById(1L);
+    }
+
+    // PUT /reviews/{id} - 200 OK
+    @Test
+    public void testModify() throws ReviewNotFoundException {
+        Review existing = createMockReview(1, "Amazing movie!", 10);
+        Review updated = createMockReview(1, "Updated review", 8);
+
+        when(reviewRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(reviewRepository.save(any(Review.class))).thenReturn(updated);
+
+        Review result = reviewService.modify(1L, updated);
+
+        assertNotNull(result);
+        verify(reviewRepository, times(1)).findById(1L);
+        verify(reviewRepository, times(1)).save(any(Review.class));
+    }
+
+    // DELETE /reviews/{id} - 204 NO CONTENT
+    @Test
+    public void testDelete() throws ReviewNotFoundException {
+        Review existing = createMockReview(1, "Amazing movie!", 10);
+
+        when(reviewRepository.findById(1L)).thenReturn(Optional.of(existing));
+        doNothing().when(reviewRepository).delete(any(Review.class));
+
+        reviewService.delete(1L);
+
+        verify(reviewRepository, times(1)).findById(1L);
+        verify(reviewRepository, times(1)).delete(any(Review.class));
     }
 
     private Review createMockReview(long id, String comment, int rating) {

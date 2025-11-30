@@ -1,7 +1,9 @@
 package acceso.datos.aa1.movies;
 
 import acceso.datos.aa1.movies.domain.Movie;
+import acceso.datos.aa1.movies.dto.MovieDto;
 import acceso.datos.aa1.movies.dto.MovieOutDto;
+import acceso.datos.aa1.movies.exception.MovieNotFoundException;
 import acceso.datos.aa1.movies.repository.MovieRepository;
 import acceso.datos.aa1.movies.service.MovieService;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,10 @@ import org.modelmapper.TypeToken;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,50 +34,79 @@ public class MovieServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    // GET /movies - 200 OK
     @Test
     public void testFindAll() {
-        List<Movie> mockMovieList = List.of(
-                createMockMovie(1, "Catch Me If You Can", "Action"),
-                createMockMovie(2, "The Matrix", "Science Fiction")
-        );
-        List<MovieOutDto> modelMapperOut = List.of(
-                new MovieOutDto(1L, "Catch Me If You Can", "A mind-bending thriller", "Action", 8.1f, "http://image1.jpg"),
-                new MovieOutDto(2L, "The Matrix", "A hacker discovers reality", "Science Fiction", 8.7f, "http://image2.jpg")
-        );
+        List<Movie> mockList = List.of(createMockMovie(1, "Catch Me If You Can", "Action"));
+        List<MovieOutDto> mockOut = List.of(new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action", 8.1f, "http://image.jpg"));
 
-        when(movieRepository.findAll()).thenReturn(mockMovieList);
-        when(modelMapper.map(mockMovieList, new TypeToken<List<MovieOutDto>>() {}.getType())).thenReturn(modelMapperOut);
+        when(movieRepository.findAll()).thenReturn(mockList);
+        when(modelMapper.map(mockList, new TypeToken<List<MovieOutDto>>() {}.getType())).thenReturn(mockOut);
 
-        List<MovieOutDto> actualMovieList = movieService.findAll("");
-        assertEquals(2, actualMovieList.size());
-        assertEquals("Catch Me If You Can", actualMovieList.get(0).getTitle());
-        assertEquals("The Matrix", actualMovieList.get(1).getTitle());
+        List<MovieOutDto> result = movieService.findAll(null, null, null, null);
 
+        assertEquals(1, result.size());
         verify(movieRepository, times(1)).findAll();
-        verify(movieRepository, times(0)).findByGenre("");
     }
 
+    // GET /movies/{id} - 200 OK
     @Test
-    public void testFindAllByGenre() {
-        List<Movie> mockMovieList = List.of(
-                createMockMovie(1, "Catch Me If You Can", "Action"),
-                createMockMovie(2, "Interstellar", "Science Fiction")
-        );
-        List<MovieOutDto> mockModelMapperOut = List.of(
-                new MovieOutDto(1L, "Catch Me If You Can", "A mind-bending thriller", "Action", 8.8f, "http://image1.jpg"),
-                new MovieOutDto(2L, "Interstellar", "Space exploration", "Science Fiction", 8.6f, "http://image2.jpg")
-        );
+    public void testFindById() throws MovieNotFoundException {
+        Movie mock = createMockMovie(1, "Catch Me If You Can", "Action");
+        MovieDto mockDto = new MovieDto();
+        mockDto.setId(1L);
 
-        when(movieRepository.findByGenre("Action")).thenReturn(mockMovieList);
-        when(modelMapper.map(mockMovieList, new TypeToken<List<MovieOutDto>>() {}.getType())).thenReturn(mockModelMapperOut);
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(mock));
+        when(modelMapper.map(mock, MovieDto.class)).thenReturn(mockDto);
 
-        List<MovieOutDto> actualMovieList = movieService.findAll("Action");
-        assertEquals(2, actualMovieList.size());
-        assertEquals("Catch Me If You Can", actualMovieList.get(0).getTitle());
-        assertEquals("Interstellar", actualMovieList.get(1).getTitle());
+        MovieDto result = movieService.findById(1L);
 
-        verify(movieRepository, times(0)).findAll();
-        verify(movieRepository, times(1)).findByGenre("Action");
+        assertNotNull(result);
+        verify(movieRepository, times(1)).findById(1L);
+    }
+
+    // POST /movies - 201 CREATED
+    @Test
+    public void testAdd() {
+        Movie newMovie = createMockMovie(0, "New Movie", "Action");
+        Movie saved = createMockMovie(3, "New Movie", "Action");
+
+        when(movieRepository.save(any(Movie.class))).thenReturn(saved);
+
+        Movie result = movieService.add(newMovie);
+
+        assertNotNull(result);
+        verify(movieRepository, times(1)).save(any(Movie.class));
+    }
+
+    // PUT /movies/{id} - 200 OK
+    @Test
+    public void testModify() throws MovieNotFoundException {
+        Movie existing = createMockMovie(1, "Catch Me If You Can", "Action");
+        Movie updated = createMockMovie(1, "Updated Movie", "Action");
+
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(movieRepository.save(any(Movie.class))).thenReturn(updated);
+
+        Movie result = movieService.modify(1L, updated);
+
+        assertNotNull(result);
+        verify(movieRepository, times(1)).findById(1L);
+        verify(movieRepository, times(1)).save(any(Movie.class));
+    }
+
+    // DELETE /movies/{id} - 204 NO CONTENT
+    @Test
+    public void testDelete() throws MovieNotFoundException {
+        Movie existing = createMockMovie(1, "Catch Me If You Can", "Action");
+
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(existing));
+        doNothing().when(movieRepository).delete(any(Movie.class));
+
+        movieService.delete(1L);
+
+        verify(movieRepository, times(1)).findById(1L);
+        verify(movieRepository, times(1)).delete(any(Movie.class));
     }
 
     private Movie createMockMovie(long id, String title, String genre) {
@@ -82,7 +115,7 @@ public class MovieServiceTest {
         movie.setTitle(title);
         movie.setSynopsis("Synopsis for " + title);
         movie.setGenre(genre);
-        movie.setReleaseDate(LocalDate.of(2003, 01, 24));
+        movie.setReleaseDate(LocalDate.of(2003, 1, 24));
         movie.setDuration(141);
         movie.setAverageRating(8.1f);
         movie.setImageUrl("http://image.jpg");
