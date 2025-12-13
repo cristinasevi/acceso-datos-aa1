@@ -12,6 +12,7 @@ API REST para la gestión de películas, directores, actores, productoras, usuar
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Endpoints de la API](#endpoints-de-la-api)
 - [Pruebas con Postman](#pruebas-con-postman)
+- [Postman Runner Parameterization](#postman-runner-parameterization)
 - [Base de Datos](#base-de-datos)
 
 ## Descripción
@@ -28,13 +29,10 @@ El proyecto implementa una arquitectura en capas (Domain, Repository, Service, C
 ## Tecnologías
 
 - **Java 21**
-- **Spring Boot 3.5.6**
-    - Spring Data JPA
-    - Spring Web
-    - Spring Boot Validation
-- **MariaDB 11.3.2** 
+- **Spring Boot**
+- **MariaDB** 
 - **Lombok**
-- **ModelMapper 3.1.1** 
+- **ModelMapper** 
 - **Docker** y **Docker Compose** 
 - **Maven** 
 
@@ -103,14 +101,17 @@ movies/
 │   │   │   ├── service/         # Lógica de negocio
 │   │   │   └── util/            # Utilidades
 │   │   └── resources/
-│   │       └── application.properties  # Configuración de Spring y BD
-│   │       └── logback-spring.xml      # Configuración de logs
+│   │       ├── application.properties  # Configuración de Spring y BD
+│   │       ├── logback-spring.xml      # Configuración de logs
+│   │       └── wiremock/
+│   │           └── mappings/    # Archivos de mock para WireMock
 │   └── test/                    # Tests unitarios
+├── postman/                     # Colección de Postman parametrizada
 ├── docker-compose.dev.yaml      # Configuración de Docker
 ├── movies.yaml                  # OpenAPI 3.0
 ├── .env                         # Variables de entorno
 ├── pom.xml                      # Dependencias Maven
-└── README.md                    # Este archivo
+└── README.md
 ```
 
 ## Endpoints de la API
@@ -238,6 +239,14 @@ Content-Type: application/json
 }
 ```
 
+## Postman Runner Parameterization
+
+1. Abre **Collection Runner** (botón "Run" en la colección)
+2. Selecciona el request **POST** correspondiente
+3. Click en **"Select File"** y carga el archivo CSV
+4. Click en **"Run"**
+5. Los datos del CSV se insertarán automáticamente
+
 ## Base de Datos
 
 ### Modelo de datos
@@ -249,14 +258,6 @@ El sistema utiliza 6 entidades principales con las siguientes relaciones:
 - **Actor** ← (N:M) → **Movie**
 - **Movie** ← (1:N) → **Review**
 - **User** ← (1:N) → **Review**
-
-### Conexión
-
-- **Host:** localhost
-- **Puerto:** 3307
-- **Base de datos:** movies
-- **Usuario:** root
-- **Contraseña:** password
 
 ### Consultas en MariaDB
 ```bash
