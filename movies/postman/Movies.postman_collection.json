@@ -79,13 +79,91 @@
 					"response": []
 				},
 				{
+					"name": "/movies?releaseDateFrom={releaseDateFrom}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/movies?releaseDateFrom=2000-01-01",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"movies"
+							],
+							"query": [
+								{
+									"key": "releaseDateFrom",
+									"value": "2000-01-01"
+								}
+							]
+						},
+						"description": "Filtra las películas por género"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies?releaseDateTo={releaseDateTo}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/movies?releaseDateTo=2025-01-01",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"movies"
+							],
+							"query": [
+								{
+									"key": "releaseDateTo",
+									"value": "2025-01-01"
+								}
+							]
+						},
+						"description": "Filtra las películas por género"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies?minRating={minRating}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/movies?minRating=8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"movies"
+							],
+							"query": [
+								{
+									"key": "minRating",
+									"value": "8"
+								}
+							]
+						},
+						"description": "Filtra las películas por género"
+					},
+					"response": []
+				},
+				{
 					"name": "/movies",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Catch Me If You Can\",\r\n  \"synopsis\": \"A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.\",\r\n  \"releaseDate\": \"2003-01-24\",\r\n  \"duration\": 141,\r\n  \"genre\": \"Action\",\r\n  \"averageRating\": 8.1,\r\n  \"imageUrl\": \"https://storage.googleapis.com/pod_public/1300/263016.jpg\",\r\n  \"studio\": {\"id\": 1},\r\n  \"director\": {\"id\": 1}\r\n}",
+							"raw": "{\r\n  \"title\": \"{{title}}\",\r\n  \"synopsis\": \"{{synopsis}}\",\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"duration\": {{duration}},\r\n  \"genre\": \"{{genre}}\",\r\n  \"averageRating\": {{averageRating}},\r\n  \"imageUrl\": \"{{imageUrl}}\",\r\n  \"studio\": {\"id\": 1},\r\n  \"director\": {\"id\": 1}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -257,13 +335,39 @@
 					"response": []
 				},
 				{
+					"name": "/actors?actorType={actorType}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/actors?actorType=Lead",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"actors"
+							],
+							"query": [
+								{
+									"key": "actorType",
+									"value": "Lead"
+								}
+							]
+						},
+						"description": "Filta los actores por nacionalidad"
+					},
+					"response": []
+				},
+				{
 					"name": "/actors",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Leonardo DiCaprio\",\r\n  \"nationality\": \"American\",\r\n  \"birthDate\": \"1974-11-11\",\r\n  \"active\": true,\r\n  \"awards\": 1,\r\n  \"biography\": \"Award-winning American actor\",\r\n  \"actorType\": \"Lead\"\r\n}",
+							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"nationality\": \"{{nationality}}\",\r\n  \"birthDate\": \"{{birthDate}}\",\r\n  \"active\": {{active}},\r\n  \"awards\": {{awards}},\r\n  \"biography\": \"{{biography}}\",\r\n  \"actorType\": \"{{actorType}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -383,13 +487,91 @@
 					"response": []
 				},
 				{
+					"name": "/users?premium={premium}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users?premium=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "premium",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Obtiene un usuario por ID"
+					},
+					"response": []
+				},
+				{
+					"name": "/users?active={active}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users?active=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Obtiene un usuario por ID"
+					},
+					"response": []
+				},
+				{
+					"name": "/users?registrationDateFrom={registrationDateFrom}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users?registrationDateFrom=2025-11-01",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "registrationDateFrom",
+									"value": "2025-11-01"
+								}
+							]
+						},
+						"description": "Obtiene un usuario por ID"
+					},
+					"response": []
+				},
+				{
 					"name": "/users",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"csevi\",\r\n  \"name\": \"Cristina\",\r\n  \"surname\": \"Serrano\",\r\n  \"email\": \"csevi@example.com\",\r\n  \"password\": \"password123\",\r\n  \"registrationDate\": \"2025-11-27\",\r\n  \"premium\": true,\r\n  \"birthDate\": \"2006-06-02\",\r\n  \"active\": true\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"name\": \"{{name}}\",\r\n  \"surname\": \"{{surname}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"registrationDate\": \"{{registrationDate}}\",\r\n  \"premium\": {{premium}},\r\n  \"birthDate\": \"{{birthDate}}\",\r\n  \"active\": {{active}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -553,13 +735,91 @@
 					"response": []
 				},
 				{
+					"name": "/reviews?minRating={minRating}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/reviews?minRating=7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "minRating",
+									"value": "7"
+								}
+							]
+						},
+						"description": "Obtiene las reseñas de un usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?recommended={recommended}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/reviews?recommended=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "recommended",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Obtiene las reseñas de un usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?spoiler={spoiler}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/reviews?spoiler=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "spoiler",
+									"value": "false"
+								}
+							]
+						},
+						"description": "Obtiene las reseñas de un usuario"
+					},
+					"response": []
+				},
+				{
 					"name": "/movies/{id}/reviews",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"comment\": \"An absolutely mind-bending masterpiece! The visuals and story are incredible.\",\r\n  \"rating\": 10,\r\n  \"reviewDate\": \"2025-11-27\",\r\n  \"recommended\": true,\r\n  \"spoiler\": false,\r\n  \"userId\": 1\r\n}",
+							"raw": "{\r\n  \"comment\": \"{{comment}}\",\r\n  \"rating\": {{rating}},\r\n  \"reviewDate\": \"{{reviewDate}}\",\r\n  \"recommended\": {{recommended}},\r\n  \"spoiler\": {{spoiler}},\r\n  \"userId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -707,13 +967,65 @@
 					"response": []
 				},
 				{
+					"name": "/directors?active={active}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/directors?active=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"directors"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Filtra directores por país"
+					},
+					"response": []
+				},
+				{
+					"name": "/directors?minAwards={minAwards}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/directors?minAwards=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"directors"
+							],
+							"query": [
+								{
+									"key": "minAwards",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Filtra directores por país"
+					},
+					"response": []
+				},
+				{
 					"name": "/directors",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Steven Spielberg\",\r\n  \"nationality\": \"American\",\r\n  \"birthDate\": \"1970-07-30\",\r\n  \"active\": true,\r\n  \"awards\": 24,\r\n  \"biography\": \"American film director known for his distinctive filmmaking style\"\r\n}",
+							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"nationality\": \"{{nationality}}\",\r\n  \"birthDate\": \"{{birthDate}}\",\r\n  \"active\": {{active}},\r\n  \"awards\": {{awards}},\r\n  \"biography\": \"{{biography}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -859,13 +1171,65 @@
 					"response": []
 				},
 				{
+					"name": "/studios?foundationYear={foundationYear}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/studios?foundationYear=1923",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"studios"
+							],
+							"query": [
+								{
+									"key": "foundationYear",
+									"value": "1923"
+								}
+							]
+						},
+						"description": "Filtra productoras por país"
+					},
+					"response": []
+				},
+				{
+					"name": "/studios?active={active}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/studios?active=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"studios"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Filtra productoras por país"
+					},
+					"response": []
+				},
+				{
 					"name": "/studios",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Warner Bros\",\r\n  \"country\": \"USA\",\r\n  \"foundationYear\": 1923,\r\n  \"email\": \"contact@warnerbros.com\",\r\n  \"phone\": \"+1234567890\",\r\n  \"active\": true\r\n}",
+							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"country\": \"{{country}}\",\r\n  \"foundationYear\": {{foundationYear}},\r\n  \"email\": \"{{email}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"active\": {{active}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
