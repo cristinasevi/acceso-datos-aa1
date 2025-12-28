@@ -43,8 +43,10 @@ public class MovieControllerTest {
     @Test
     public void testGetAll200() throws Exception {
         List<MovieOutDto> moviesOutDto = List.of(
-                new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action", 8.1f, "http://image1.jpg"),
-                new MovieOutDto(2L, "The Matrix", "Synopsis", "Science Fiction", 8.7f, "http://image2.jpg")
+                new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action",
+                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image1.jpg"),
+                new MovieOutDto(2L, "The Matrix", "Synopsis", "Science Fiction",
+                        LocalDate.of(1999, 3, 31), 136, 8.7f, "http://image2.jpg")
         );
 
         when(movieService.findAll(null, null, null, null)).thenReturn(moviesOutDto);

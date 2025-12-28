@@ -38,7 +38,10 @@ public class MovieServiceTest {
     @Test
     public void testFindAll() {
         List<Movie> mockList = List.of(createMockMovie(1, "Catch Me If You Can", "Action"));
-        List<MovieOutDto> mockOut = List.of(new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action", 8.1f, "http://image.jpg"));
+        List<MovieOutDto> mockOut = List.of(
+                new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action",
+                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image.jpg")
+        );
 
         when(movieRepository.findAll()).thenReturn(mockList);
         when(modelMapper.map(mockList, new TypeToken<List<MovieOutDto>>() {}.getType())).thenReturn(mockOut);
