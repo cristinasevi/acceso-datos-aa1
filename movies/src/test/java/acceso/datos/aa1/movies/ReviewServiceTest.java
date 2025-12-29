@@ -38,14 +38,14 @@ public class ReviewServiceTest {
     @Test
     public void testFindAll() {
         List<Review> mockReviewList = List.of(
-                createMockReview(1, "Amazing movie!", 10),
-                createMockReview(2, "Great film", 9)
+                createMockReview(1, "Amazing movie!", 10.0f),
+                createMockReview(2, "Great film", 9.0f)
         );
 
         List<ReviewOutDto> mockReviewOutDtoList = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27),
                         true, false, "csevi", "Catch Me If You Can"),
-                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28),
+                new ReviewOutDto(2L, "Great film", 9.0f, LocalDate.of(2025, 11, 28),
                         true, false, "mdiaz", "The Matrix")
         );
 
@@ -61,9 +61,9 @@ public class ReviewServiceTest {
     // GET /movies/{movieId}/reviews - 200 OK
     @Test
     public void testFindByMovieId() {
-        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10));
+        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10.0f));
         List<ReviewOutDto> mockOut = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27),
                         true, false, "csevi", "Catch Me If You Can")
         );
 
@@ -79,9 +79,9 @@ public class ReviewServiceTest {
     // GET /users/{userId}/reviews - 200 OK
     @Test
     public void testFindByUserId() {
-        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10));
+        List<Review> mockList = List.of(createMockReview(1, "Amazing movie!", 10.0f));
         List<ReviewOutDto> mockOut = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27),
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27),
                         true, false, "csevi", "Catch Me If You Can")
         );
 
@@ -97,7 +97,7 @@ public class ReviewServiceTest {
     // GET /reviews/{id} - 200 OK
     @Test
     public void testFindById() throws ReviewNotFoundException {
-        Review mock = createMockReview(1, "Amazing movie!", 10);
+        Review mock = createMockReview(1, "Amazing movie!", 10.0f);
         ReviewDto mockDto = new ReviewDto();
         mockDto.setId(1L);
 
@@ -113,8 +113,8 @@ public class ReviewServiceTest {
     // PUT /reviews/{id} - 200 OK
     @Test
     public void testModify() throws ReviewNotFoundException {
-        Review existing = createMockReview(1, "Amazing movie!", 10);
-        Review updated = createMockReview(1, "Updated review", 8);
+        Review existing = createMockReview(1, "Amazing movie!", 10.0f);
+        Review updated = createMockReview(1, "Updated review", 8.0f);
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(reviewRepository.save(any(Review.class))).thenReturn(updated);
@@ -129,7 +129,7 @@ public class ReviewServiceTest {
     // DELETE /reviews/{id} - 204 NO CONTENT
     @Test
     public void testDelete() throws ReviewNotFoundException {
-        Review existing = createMockReview(1, "Amazing movie!", 10);
+        Review existing = createMockReview(1, "Amazing movie!", 10.0f);
 
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(existing));
         doNothing().when(reviewRepository).delete(any(Review.class));
@@ -140,7 +140,7 @@ public class ReviewServiceTest {
         verify(reviewRepository, times(1)).delete(any(Review.class));
     }
 
-    private Review createMockReview(long id, String comment, int rating) {
+    private Review createMockReview(long id, String comment, float rating) {
         Review review = new Review();
         review.setId(id);
         review.setComment(comment);

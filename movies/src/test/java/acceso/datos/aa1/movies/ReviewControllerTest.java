@@ -44,8 +44,8 @@ public class ReviewControllerTest {
     @Test
     public void testGetAll200() throws Exception {
         List<ReviewOutDto> reviewsOutDto = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can"),
-                new ReviewOutDto(2L, "Great film", 9, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can"),
+                new ReviewOutDto(2L, "Great film", 9.0f, LocalDate.of(2025, 11, 28), true, false, "mdiaz", "The Matrix")
         );
 
         when(reviewService.findAll(null, null, null)).thenReturn(reviewsOutDto);
@@ -66,7 +66,7 @@ public class ReviewControllerTest {
     @Test
     public void testGetMovieReviews200() throws Exception {
         List<ReviewOutDto> reviewsOutDto = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can")
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can")
         );
 
         when(reviewService.findByMovieId(1L)).thenReturn(reviewsOutDto);
@@ -80,7 +80,7 @@ public class ReviewControllerTest {
     @Test
     public void testGetUserReviews200() throws Exception {
         List<ReviewOutDto> reviewsOutDto = List.of(
-                new ReviewOutDto(1L, "Amazing movie!", 10, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can")
+                new ReviewOutDto(1L, "Amazing movie!", 10.0f, LocalDate.of(2025, 11, 27), true, false, "csevi", "Catch Me If You Can")
         );
 
         when(reviewService.findByUserId(1L)).thenReturn(reviewsOutDto);
@@ -119,7 +119,7 @@ public class ReviewControllerTest {
     public void testAddReview201() throws Exception {
         ReviewInDto newReviewDto = new ReviewInDto();
         newReviewDto.setComment("Great movie!");
-        newReviewDto.setRating(9);
+        newReviewDto.setRating(9.0f);
         newReviewDto.setRecommended(true);
         newReviewDto.setSpoiler(false);
         newReviewDto.setUserId(1L);

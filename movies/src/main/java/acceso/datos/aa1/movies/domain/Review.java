@@ -29,7 +29,7 @@ public class Review {
     @NotNull(message = "Rating is required")
     @Min(value = 1, message = "Rating must be between 1 and 10")
     @Max(value = 10, message = "Rating must be between 1 and 10")
-    private Integer rating;
+    private float rating;
 
     @Column(name = "review_date")
     @JsonFormat(pattern = "yyyy-MM-dd")
