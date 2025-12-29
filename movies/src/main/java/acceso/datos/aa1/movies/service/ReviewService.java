@@ -129,8 +129,11 @@ public class ReviewService {
         Review existingReview = reviewRepository.findById(id)
                 .orElseThrow(ReviewNotFoundException::new);
 
-        modelMapper.map(review, existingReview);
-        existingReview.setId(id);
+        existingReview.setComment(review.getComment());
+        existingReview.setRating(review.getRating());
+        existingReview.setReviewDate(review.getReviewDate());
+        existingReview.setRecommended(review.getRecommended());
+        existingReview.setSpoiler(review.getSpoiler());
 
         return reviewRepository.save(existingReview);
     }
