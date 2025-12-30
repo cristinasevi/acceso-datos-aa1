@@ -1,7 +1,6 @@
 package acceso.datos.aa1.movies;
 
 import acceso.datos.aa1.movies.domain.Movie;
-import acceso.datos.aa1.movies.dto.MovieDto;
 import acceso.datos.aa1.movies.dto.MovieOutDto;
 import acceso.datos.aa1.movies.exception.MovieNotFoundException;
 import acceso.datos.aa1.movies.repository.MovieRepository;
@@ -40,7 +39,8 @@ public class MovieServiceTest {
         List<Movie> mockList = List.of(createMockMovie(1, "Catch Me If You Can", "Action"));
         List<MovieOutDto> mockOut = List.of(
                 new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action",
-                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image.jpg")
+                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image.jpg",
+                        null, null)
         );
 
         when(movieRepository.findAll()).thenReturn(mockList);
@@ -55,16 +55,27 @@ public class MovieServiceTest {
     // GET /movies/{id} - 200 OK
     @Test
     public void testFindById() throws MovieNotFoundException {
-        Movie mock = createMockMovie(1, "Catch Me If You Can", "Action");
-        MovieDto mockDto = new MovieDto();
-        mockDto.setId(1L);
+        Movie mockMovie = createMockMovie(1, "Catch Me If You Can", "Action");
+        MovieOutDto mockOut = new MovieOutDto(
+                1L,
+                "Catch Me If You Can",
+                "Synopsis",
+                "Action",
+                LocalDate.of(2003, 1, 24),
+                141,
+                8.1f,
+                "http://image.jpg",
+                null,
+                null
+        );
 
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(mock));
-        when(modelMapper.map(mock, MovieDto.class)).thenReturn(mockDto);
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(mockMovie));
+        when(modelMapper.map(mockMovie, MovieOutDto.class)).thenReturn(mockOut);
 
-        MovieDto result = movieService.findById(1L);
+        MovieOutDto result = movieService.findById(1);
 
         assertNotNull(result);
+        assertEquals("Catch Me If You Can", result.getTitle());
         verify(movieRepository, times(1)).findById(1L);
     }
 

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import acceso.datos.aa1.movies.controller.MovieController;
 import acceso.datos.aa1.movies.domain.Movie;
-import acceso.datos.aa1.movies.dto.MovieDto;
+import acceso.datos.aa1.movies.domain.Studio;
 import acceso.datos.aa1.movies.dto.MovieOutDto;
+import acceso.datos.aa1.movies.dto.MovieUpdateRequest;
 import acceso.datos.aa1.movies.exception.MovieNotFoundException;
+import acceso.datos.aa1.movies.repository.DirectorRepository;
+import acceso.datos.aa1.movies.repository.StudioRepository;
 import acceso.datos.aa1.movies.service.MovieService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,6 +40,12 @@ public class MovieControllerTest {
     @MockitoBean
     private MovieService movieService;
 
+    @MockitoBean
+    private StudioRepository studioRepository;
+
+    @MockitoBean
+    private DirectorRepository directorRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -44,9 +54,11 @@ public class MovieControllerTest {
     public void testGetAll200() throws Exception {
         List<MovieOutDto> moviesOutDto = List.of(
                 new MovieOutDto(1L, "Catch Me If You Can", "Synopsis", "Action",
-                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image1.jpg"),
+                        LocalDate.of(2003, 1, 24), 141, 8.1f, "http://image1.jpg",
+                        null, null),
                 new MovieOutDto(2L, "The Matrix", "Synopsis", "Science Fiction",
-                        LocalDate.of(1999, 3, 31), 136, 8.7f, "http://image2.jpg")
+                        LocalDate.of(1999, 3, 31), 136, 8.7f, "http://image2.jpg",
+                        null, null)
         );
 
         when(movieService.findAll(null, null, null, null)).thenReturn(moviesOutDto);
@@ -66,15 +78,31 @@ public class MovieControllerTest {
     // GET /movies/{id} - 200 OK
     @Test
     public void testGetById200() throws Exception {
-        MovieDto movieDto = new MovieDto(1L, "Catch Me If You Can", "Synopsis",
-                LocalDate.of(2003, 1, 24), 141, "Action", 8.1f, "http://image.jpg",
-                1L, "Steven Spielberg", "Warner Bros");
+        MovieOutDto movieOutDto = new MovieOutDto(
+                1L,
+                "Catch Me If You Can",
+                "Synopsis",
+                "Action",
+                LocalDate.of(2003, 1, 24),
+                141,
+                8.1f,
+                "http://image.jpg",
+                null,
+                null
+        );
 
-        when(movieService.findById(1L)).thenReturn(movieDto);
+        when(movieService.findById(1)).thenReturn(movieOutDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/movies/1")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/movies/1")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        MovieOutDto response = objectMapper.readValue(jsonResponse, MovieOutDto.class);
+
+        assertNotNull(response);
+        assertEquals("Catch Me If You Can", response.getTitle());
     }
 
     // GET /movies/{id} - 404 NOT FOUND
@@ -114,7 +142,7 @@ public class MovieControllerTest {
     // POST /movies - 400 BAD REQUEST
     @Test
     public void testAddMovie400() throws Exception {
-        String invalidMovieJson = "{ \"synopsis\": \"Missing title\" }"; // Falta "title"
+        String invalidMovieJson = "{ \"synopsis\": \"Missing title\" }";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/movies")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,33 +153,50 @@ public class MovieControllerTest {
     // PUT /movies/{id} - 200 OK
     @Test
     public void testModifyMovie200() throws Exception {
+        MovieUpdateRequest request = MovieUpdateRequest.builder()
+                .title("Updated Movie")
+                .synopsis("Updated synopsis")
+                .releaseDate(LocalDate.of(2025, 1, 1))
+                .duration(120)
+                .genre("Action")
+                .averageRating(8.5f)
+                .studioId(1L)
+                .build();
+
+        Studio mockStudio = new Studio();
+        mockStudio.setId(1L);
+        mockStudio.setName("Warner Bros");
+
         Movie updatedMovie = new Movie();
         updatedMovie.setId(1L);
         updatedMovie.setTitle("Updated Movie");
+        updatedMovie.setStudio(mockStudio);
 
+        when(studioRepository.findById(1L)).thenReturn(Optional.of(mockStudio));
         when(movieService.modify(anyLong(), any(Movie.class))).thenReturn(updatedMovie);
 
-        String movieJson = objectMapper.writeValueAsString(updatedMovie);
+        String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/movies/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(movieJson))
+                        .content(requestJson))
                 .andExpect(status().isOk());
     }
 
     // PUT /movies/{id} - 404 NOT FOUND
     @Test
     public void testModifyMovie404() throws Exception {
-        Movie updatedMovie = new Movie();
-        updatedMovie.setTitle("NonExistent Movie");
+        MovieUpdateRequest request = MovieUpdateRequest.builder()
+                .title("NonExistent Movie")
+                .build();
 
         when(movieService.modify(anyLong(), any(Movie.class))).thenThrow(new MovieNotFoundException());
 
-        String movieJson = objectMapper.writeValueAsString(updatedMovie);
+        String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/movies/999")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(movieJson))
+                        .content(requestJson))
                 .andExpect(status().isNotFound());
     }
 

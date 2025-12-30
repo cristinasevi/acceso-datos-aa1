@@ -22,4 +22,7 @@ public class MovieOutDto {
     private Integer duration;
     private Float averageRating;
     private String imageUrl;
+
+    private StudioOutDto studio;
+    private DirectorOutDto director;
 }

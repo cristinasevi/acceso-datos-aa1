@@ -1,11 +1,11 @@
 package acceso.datos.aa1.movies.service;
 
 import acceso.datos.aa1.movies.domain.Movie;
-import acceso.datos.aa1.movies.dto.MovieDto;
+import acceso.datos.aa1.movies.dto.DirectorOutDto;
 import acceso.datos.aa1.movies.dto.MovieOutDto;
+import acceso.datos.aa1.movies.dto.StudioOutDto;
 import acceso.datos.aa1.movies.exception.MovieNotFoundException;
 import acceso.datos.aa1.movies.repository.MovieRepository;
-import acceso.datos.aa1.movies.util.DateUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,37 +100,60 @@ public class MovieService {
             movies = movieRepository.findAll();
         }
 
-        return modelMapper.map(movies, new TypeToken<List<MovieOutDto>>() {}.getType());
+        List<MovieOutDto> movieOutDtos = modelMapper.map(movies, new TypeToken<List<MovieOutDto>>() {}.getType());
+
+        for (int i = 0; i < movies.size(); i++) {
+            Movie movie = movies.get(i);
+            MovieOutDto dto = movieOutDtos.get(i);
+
+            if (movie.getStudio() != null) {
+                dto.setStudio(modelMapper.map(movie.getStudio(), StudioOutDto.class));
+            }
+
+            if (movie.getDirector() != null) {
+                dto.setDirector(modelMapper.map(movie.getDirector(), DirectorOutDto.class));
+            }
+        }
+
+        return movieOutDtos;
     }
 
-    public MovieDto findById(long id) throws MovieNotFoundException {
+    public MovieOutDto findById(long id) throws MovieNotFoundException {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(MovieNotFoundException::new);
 
-        MovieDto movieDto = modelMapper.map(movie, MovieDto.class);
+        MovieOutDto movieOutDto = modelMapper.map(movie, MovieOutDto.class);
 
-        // Campos calculados
-        movieDto.setDaysUntilRelease(
-                DateUtil.getDaysBetweenDates(LocalDate.now(), movie.getReleaseDate())
-        );
-
-        // Relaciones simplificadas
-        if (movie.getDirector() != null) {
-            movieDto.setDirectorName(movie.getDirector().getName());
-        }
         if (movie.getStudio() != null) {
-            movieDto.setStudioName(movie.getStudio().getName());
+            movieOutDto.setStudio(modelMapper.map(movie.getStudio(), StudioOutDto.class));
         }
 
-        return movieDto;
+        if (movie.getDirector() != null) {
+            movieOutDto.setDirector(modelMapper.map(movie.getDirector(), DirectorOutDto.class));
+        }
+
+        return movieOutDto;
     }
 
     public Movie modify(long id, Movie movie) throws MovieNotFoundException {
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(MovieNotFoundException::new);
 
-        modelMapper.map(movie, existingMovie);
-        existingMovie.setId(id);
+        existingMovie.setTitle(movie.getTitle());
+        existingMovie.setSynopsis(movie.getSynopsis());
+        existingMovie.setReleaseDate(movie.getReleaseDate());
+        existingMovie.setDuration(movie.getDuration());
+        existingMovie.setGenre(movie.getGenre());
+        existingMovie.setImageUrl(movie.getImageUrl());
+        existingMovie.setAverageRating(movie.getAverageRating());
+
+        if (movie.getStudio() != null) {
+            existingMovie.setStudio(movie.getStudio());
+        }
+
+        if (movie.getDirector() != null) {
+            existingMovie.setDirector(movie.getDirector());
+        }
 
         return movieRepository.save(existingMovie);
     }

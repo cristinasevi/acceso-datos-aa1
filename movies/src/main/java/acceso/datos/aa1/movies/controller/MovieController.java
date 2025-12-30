@@ -1,10 +1,16 @@
 package acceso.datos.aa1.movies.controller;
 
+import acceso.datos.aa1.movies.domain.Director;
 import acceso.datos.aa1.movies.domain.Movie;
-import acceso.datos.aa1.movies.dto.MovieDto;
+import acceso.datos.aa1.movies.domain.Studio;
 import acceso.datos.aa1.movies.dto.MovieOutDto;
+import acceso.datos.aa1.movies.dto.MovieUpdateRequest;
+import acceso.datos.aa1.movies.exception.DirectorNotFoundException;
 import acceso.datos.aa1.movies.exception.ErrorResponse;
 import acceso.datos.aa1.movies.exception.MovieNotFoundException;
+import acceso.datos.aa1.movies.exception.StudioNotFoundException;
+import acceso.datos.aa1.movies.repository.DirectorRepository;
+import acceso.datos.aa1.movies.repository.StudioRepository;
 import acceso.datos.aa1.movies.service.MovieService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +32,12 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    @Autowired
+    private StudioRepository studioRepository;
+
+    @Autowired
+    private DirectorRepository directorRepository;
+
     @GetMapping("/movies")
     public ResponseEntity<List<MovieOutDto>> getAll(
             @RequestParam(value = "genre", required = false) String genre,
@@ -39,9 +51,9 @@ public class MovieController {
     }
 
     @GetMapping("/movies/{id}")
-    public ResponseEntity<MovieDto> get(@PathVariable long id) throws MovieNotFoundException {
-        MovieDto movieDto = movieService.findById(id);
-        return ResponseEntity.ok(movieDto);
+    public ResponseEntity<MovieOutDto> get(@PathVariable long id) throws MovieNotFoundException {
+        MovieOutDto movieOutDto = movieService.findById(id);
+        return ResponseEntity.ok(movieOutDto);
     }
 
     @PostMapping("/movies")
@@ -51,9 +63,36 @@ public class MovieController {
     }
 
     @PutMapping("/movies/{id}")
-    public ResponseEntity<Movie> modifyMovie(@PathVariable long id, @RequestBody Movie movie) throws MovieNotFoundException {
-        Movie updatedMovie = movieService.modify(id, movie);
-        return ResponseEntity.ok(updatedMovie);
+    public ResponseEntity<Movie> modifyMovie(@PathVariable long id, @RequestBody MovieUpdateRequest movieUpdateRequest) throws MovieNotFoundException {
+        try {
+            Movie movie = new Movie();
+            movie.setTitle(movieUpdateRequest.getTitle());
+            movie.setSynopsis(movieUpdateRequest.getSynopsis());
+            movie.setReleaseDate(movieUpdateRequest.getReleaseDate());
+            movie.setDuration(movieUpdateRequest.getDuration());
+            movie.setGenre(movieUpdateRequest.getGenre());
+            movie.setImageUrl(movieUpdateRequest.getImageUrl());
+            movie.setAverageRating(movieUpdateRequest.getAverageRating());
+
+            if (movieUpdateRequest.getStudioId() != null) {
+                Studio studio = studioRepository.findById(movieUpdateRequest.getStudioId())
+                        .orElseThrow(StudioNotFoundException::new);
+                movie.setStudio(studio);
+            }
+            
+            if (movieUpdateRequest.getDirectorId() != null) {
+                Director director = directorRepository.findById(movieUpdateRequest.getDirectorId())
+                        .orElseThrow(DirectorNotFoundException::new);
+                movie.setDirector(director);
+            }
+
+            Movie updatedMovie = movieService.modify(id, movie);
+            return ResponseEntity.ok(updatedMovie);
+        } catch (StudioNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (DirectorNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/movies/{id}")
