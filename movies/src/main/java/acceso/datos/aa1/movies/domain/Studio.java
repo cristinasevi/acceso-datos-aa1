@@ -42,6 +42,12 @@ public class Studio {
     @Column
     private Boolean active;
 
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
     @OneToMany(mappedBy = "studio")
     @JsonBackReference
     private List<Movie> movies;

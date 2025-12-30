@@ -37,7 +37,7 @@ public class StudioServiceTest {
     @Test
     public void testFindAll() {
         List<Studio> mockList = List.of(createMockStudio(1, "Warner Bros", "USA"));
-        List<StudioOutDto> mockOut = List.of(new StudioOutDto(1L, "Warner Bros", "USA", true));
+        List<StudioOutDto> mockOut = List.of(new StudioOutDto(1L, "Warner Bros", "USA", true, 34.1522, -118.3437));
 
         when(studioRepository.findAll()).thenReturn(mockList);
         when(modelMapper.map(mockList, new TypeToken<List<StudioOutDto>>() {}.getType())).thenReturn(mockOut);
@@ -115,6 +115,8 @@ public class StudioServiceTest {
         studio.setCountry(country);
         studio.setFoundationYear(1923);
         studio.setActive(true);
+        studio.setLatitude(34.1522);
+        studio.setLongitude(-118.3437);
         return studio;
     }
 }

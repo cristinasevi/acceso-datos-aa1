@@ -13,4 +13,6 @@ public class StudioOutDto {
     private String name;
     private String country;
     private Boolean active;
+    private Double latitude;
+    private Double longitude;
 }

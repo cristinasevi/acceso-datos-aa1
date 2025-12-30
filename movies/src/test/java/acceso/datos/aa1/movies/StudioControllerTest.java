@@ -42,8 +42,8 @@ public class StudioControllerTest {
     @Test
     public void testGetAll200() throws Exception {
         List<StudioOutDto> studiosOutDto = List.of(
-                new StudioOutDto(1L, "Warner Bros", "USA", true),
-                new StudioOutDto(2L, "Universal Pictures", "USA", true)
+                new StudioOutDto(1L, "Warner Bros", "USA", true, 34.1522, -118.3437),
+                new StudioOutDto(2L, "Universal Pictures", "USA", true, 51.5074, -0.1278)
         );
 
         when(studioService.findAll(null, null, null)).thenReturn(studiosOutDto);
@@ -91,10 +91,14 @@ public class StudioControllerTest {
         newStudio.setName("Paramount Pictures");
         newStudio.setCountry("USA");
         newStudio.setFoundationYear(1912);
+        newStudio.setLatitude(34.0522);
+        newStudio.setLongitude(-118.2437);
 
         Studio savedStudio = new Studio();
         savedStudio.setId(3L);
         savedStudio.setName("Paramount Pictures");
+        savedStudio.setLatitude(34.0522);
+        savedStudio.setLongitude(-118.2437);
 
         when(studioService.add(any(Studio.class))).thenReturn(savedStudio);
 
@@ -123,6 +127,8 @@ public class StudioControllerTest {
         Studio updatedStudio = new Studio();
         updatedStudio.setId(1L);
         updatedStudio.setName("Warner Bros");
+        updatedStudio.setLatitude(34.1522);
+        updatedStudio.setLongitude(-118.3437);
 
         when(studioService.modify(anyLong(), any(Studio.class))).thenReturn(updatedStudio);
 
@@ -139,6 +145,8 @@ public class StudioControllerTest {
     public void testModifyStudio404() throws Exception {
         Studio updatedStudio = new Studio();
         updatedStudio.setName("NonExistent Studio");
+        updatedStudio.setLatitude(34.0522);
+        updatedStudio.setLongitude(-118.2437);
 
         when(studioService.modify(anyLong(), any(Studio.class))).thenThrow(new StudioNotFoundException());
 
