@@ -147,6 +147,10 @@ public class MovieService {
         existingMovie.setImageUrl(movie.getImageUrl());
         existingMovie.setAverageRating(movie.getAverageRating());
 
+        if (movie.getImageUrl() != null) {
+            existingMovie.setImageUrl(movie.getImageUrl());
+        }
+
         if (movie.getStudio() != null) {
             existingMovie.setStudio(movie.getStudio());
         }

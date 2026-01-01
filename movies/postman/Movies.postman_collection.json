@@ -163,7 +163,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"{{title}}\",\r\n  \"synopsis\": \"{{synopsis}}\",\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"duration\": {{duration}},\r\n  \"genre\": \"{{genre}}\",\r\n  \"averageRating\": {{averageRating}},\r\n  \"imageUrl\": \"{{imageUrl}}\",\r\n  \"studio\": {\"id\": 1},\r\n  \"director\": {\"id\": 1}\r\n}",
+							"raw": "{\r\n  \"title\": \"{{title}}\",\r\n  \"synopsis\": \"{{synopsis}}\",\r\n  \"releaseDate\": \"{{releaseDate}}\",\r\n  \"duration\": {{duration}},\r\n  \"genre\": \"{{genre}}\",\r\n  \"averageRating\": {{averageRating}},\r\n  \"imageUrl\": \"{{imageUrl}}\",\r\n  \"studioId\": 1,\r\n  \"directorId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -192,7 +192,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Catch Me If You Can\",\r\n  \"synopsis\": \"A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit.\",\r\n  \"releaseDate\": \"2003-01-24\",\r\n  \"duration\": 141,\r\n  \"genre\": \"Action\",\r\n  \"averageRating\": 8.1,\r\n  \"imageUrl\": \"https://storage.googleapis.com/pod_public/1300/263016.jpg\"\r\n}",
+							"raw": "{\r\n  \"title\": \"Updated Movie\",\r\n  \"synopsis\": \"...\",\r\n  \"releaseDate\": \"2025-01-01\",\r\n  \"duration\": 120,\r\n  \"genre\": \"Action\",\r\n  \"averageRating\": 8.5,\r\n  \"imageUrl\": \"https://...\",\r\n  \"studioId\": 1,\r\n  \"directorId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1229,7 +1229,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"country\": \"{{country}}\",\r\n  \"foundationYear\": {{foundationYear}},\r\n  \"email\": \"{{email}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"active\": {{active}}\r\n}",
+							"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"country\": \"{{country}}\",\r\n  \"foundationYear\": {{foundationYear}},\r\n  \"email\": \"{{email}}\",\r\n  \"phone\": \"{{phone}}\",\r\n  \"active\": {{active}},\r\n  \"latitude\": {{latitude}},\r\n  \"longitude\": {{longitude}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1258,7 +1258,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"Warner Bros Pictures\",\r\n  \"country\": \"USA\",\r\n  \"foundationYear\": 1923,\r\n  \"email\": \"info@warnerbros.com\",\r\n  \"phone\": \"+1234567890\",\r\n  \"active\": true\r\n}",
+							"raw": "{\r\n  \"name\": \"Warner Bros Pictures\",\r\n  \"country\": \"USA\",\r\n  \"foundationYear\": 1923,\r\n  \"email\": \"info@warnerbros.com\",\r\n  \"phone\": \"+1234567890\",\r\n  \"active\": true,\r\n  \"latitude\": 34.151618,\r\n  \"longitude\": -118.338312\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
