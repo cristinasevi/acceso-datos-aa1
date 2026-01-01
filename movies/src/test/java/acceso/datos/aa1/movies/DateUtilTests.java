@@ -27,6 +27,6 @@ public class DateUtilTests {
     public void testCalculateAge() {
         LocalDate birthDate = LocalDate.of(2000, 1, 1);
         int age = DateUtil.calculateAge(birthDate);
-        assertEquals(25, age);
+        assertEquals(26, age);
     }
 }
